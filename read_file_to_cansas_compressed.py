@@ -12,6 +12,11 @@ Reads and extracts data from one reduced experimental SAXS file (H2O_100pc_2D_0.
 Creates a new hdf5 file with CanSAS format (H2O_100pc_2D_0.051kG.ABS.hdf5).   
 Writes the information from the experimental file to the hdf5-CanSAS file.
 
+CanSAS format described:
+http://www.cansas.org/formats/canSAS2012/1.0/doc/framework.html
+http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
+
+
 '''
 
 
