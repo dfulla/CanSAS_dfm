@@ -33,8 +33,7 @@ FILE_PRODUCER = "canSAS"
 class ExampleFile:
 
 	def __init__(self, name, **keywords):
-		#self.name = name
-		self.name = "%s.hdf5"%file_to_convert
+		self.name = name
 		self.keywords = keywords
 
 	def createFile(self):
@@ -128,7 +127,7 @@ if __name__ == "__main__":
 		self.createDataSet("I", I, {"units": "1/cm"})
 		self.closeFile()
 
-      ConvertCansas(ExampleFile).write()
+      ConvertCansas("%s.hdf5"%file_to_convert).write()
       print Qx
       print Qx[0]
       print Qx.shape
