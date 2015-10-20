@@ -19,9 +19,17 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 
 '''
 
-### UNDER DEVELOPMENT ### 
+### UNDER DEVELOPMENT ###
 
-#files:
+# lacking:
+# Magnetic field
+# renaming
+# efficiency
+# correct I
+# make I_axes and Q_indices dynamic
+# generalize sasdata01...
+
+
 
 exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS","H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
 file_to_convert = exp_files[2]
@@ -70,19 +78,19 @@ class ExampleFile:
 			for key in attributes.keys():
 				ds.attrs[key] = attributes[key]
 
-# reads experimental file
-
 def file_r(exp_file = file_to_convert):
 
     file_open = (open(exp_file).readlines())
     return exp_file,file_open
 
-# extracts and return data from columns
-
 def get_columns(file_content = ""):
   
     try:
       Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS = np.loadtxt(file_content,unpack=True, skiprows = 19,dtype=[('Qx','<f8'),('Qy','<f8'),('I(Qx,Qy)','<f8'),('err(I)','<f8'),('Qz','<f8'),('SigmaQ_parall','<f8'),('SigmaQ_perp','<f8'),('fSubS(beam stop shadow)','<f8')])
+      Qx = np.reshape(Qx,(128,128))
+      Qy = np.reshape(Qy,(128,128))
+      I  = np.reshape(I ,(128,128))
+
       return Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS
 
     except:
@@ -93,43 +101,27 @@ def createFile(self):
     self.f.attrs['file_name'] = self.name
     self.f.attrs['file_time'] = FILE_TIMESTAMP
     self.f.attrs['producer'] = FILE_PRODUCER
-   
+
+
+class ConvertCansas(ExampleFile):
+   def write(self, exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]):
+	   self.createFile()
+           for i,files in enumerate(exp_files):
+                   self.createEntry("sasentry0%i"%(i+1))
+	           self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
+	           file_i = file_to_convert
+                   Qx,Qy,I = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[2]
+	           self.createDataSet("Qx", Qx, {"units": "1/A"})
+	           self.createDataSet("Qy", Qy, {"units": "1/A"})
+	           self.createDataSet("I", I, {"units": "1/cm"})
+	   self.closeFile()
+    
 def main(exp_file = file_to_convert):
-
-    text = file_r(exp_file)		#reads file    
-    name_of_file = text[0]
-    print name_of_file
-    content_of_file = text[1]
-    print len(content_of_file)
-    data_in_columns = get_columns(name_of_file)    
-    print data_in_columns
-
+    ConvertCansas("%s.hdf5"%file_to_convert).write()
 
 if __name__ == "__main__":
-    
-    get_columns("H2O_100pc_2D_0.051kG.ABS")
-    file1 = "H2O_100pc_2D_0.051kG.ABS"
-    #file2 = "D2O_100pc_2D_15_5kG.ABS"
-    
-    list_of_files = [file1]
-    for file_i in list_of_files:
-     
-      Qx,Qy,I = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[2]
-     
-      class ConvertCansas(ExampleFile):
-        def write(self):  
-		self.createFile()
-		self.createEntry("sasentry01")
-		self.createData("sasdata01_%s"%file_i, np.array([0]), "Q")
-		#print "sasdata01_%s"%file_i
-		self.createDataSet("Qx", Qx, {"units": "1/A"})
-		self.createDataSet("Qy", Qy, {"units": "1/A"})
-		self.createDataSet("I", I, {"units": "1/cm"})
-		self.closeFile()
 
-      ConvertCansas("%s.hdf5"%file_to_convert).write()
-      print Qx
-      print Qx[0]
-      print Qx.shape
-      print type(Qx)
+    main()
+        
+
       
