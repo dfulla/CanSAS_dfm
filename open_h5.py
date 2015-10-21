@@ -31,19 +31,19 @@ import numpy as np
 import h5py
 import sys
          
-def CanSAS_file_exists(file_to_read = ""):
+def CanSAS_file_exists(file_to_read):
     if os.path.isfile(file_to_read):
         return True
     else:
         print "File %s not found"%(file_to_read)
 
-def h5_get_structure(file_to_read = ""):
+def h5_get_structure(file_to_read):
     h5file = tables.open_file(file_to_read, driver="H5FD_CORE")
     content_h5 = str(h5file)
     h5file.close()
     return content_h5    
 
-def dsets_extract(content_h5 = ""):
+def dsets_extract(content_h5):
     content_split = content_h5.split("\n")
     dsets_in_file = []
     for item in content_split:
@@ -51,7 +51,7 @@ def dsets_extract(content_h5 = ""):
             dsets_in_file.append(item.split(" ")[0])
     return dsets_in_file
 
-def dsets_id_extract(content_h5 = ""):
+def dsets_id_extract(content_h5):
     content_split = content_h5.split("\n")
     dsets_id = []
     for item in content_split:
@@ -59,7 +59,7 @@ def dsets_id_extract(content_h5 = ""):
             dsets_id.append(item.split(" ")[0].split('/')[-1])
     return dsets_id    
     
-def shapes_extract(content_h5 = ""):
+def shapes_extract(content_h5):
     content_split = content_h5.split("\n")
     shape_dsets = []
     for item in content_split:
@@ -73,7 +73,7 @@ def data_extract(file_to_read = '', dset_name = ''):
     f.close()
     return data
     
-def file_structure_print(file_to_read = ""):
+def file_structure_print(file_to_read):
     content_h5 = h5_get_structure(file_to_read)
     list_of_dsets = dsets_extract(content_h5)
     dsets_in_file = []
