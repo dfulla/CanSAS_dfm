@@ -31,8 +31,10 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 
 
 
-exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS","H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
-file_to_convert = exp_files[2]
+#exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
+exp_files = ["H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
+
+file_to_convert = exp_files[1]
 
 FILE_TIMESTAMP = time.strftime("%Y-%m-%dT%H:%M:%S")
 FILE_TIMESTAMP += '%+03d%02d' % (-time.timezone/60/60, abs(time.timezone/60) % 60)
@@ -78,11 +80,24 @@ class ExampleFile:
 			for key in attributes.keys():
 				ds.attrs[key] = attributes[key]
 
-def file_r(exp_file = file_to_convert):
-
+# is this function being used?
+def file_read(exp_file = file_to_convert):
     file_open = (open(exp_file).readlines())
     return exp_file,file_open
 
+
+def get_magnetic_fields(exp_files):
+        #shall it do it automatically?
+        for sample in exp_files:
+                magnetic_field =  sample.split('2D_')[1].split('kG.ABS')[0]
+                if '_' in magnetic_field:
+                        magnetic_field = magnetic_field.replace('_','.')
+                
+        magnetic_fields = [0.051,15.5] # from files
+
+get_magnetic_fields(exp_files)
+        
+        
 def get_columns(file_content = ""):
   
     try:
@@ -106,7 +121,9 @@ def createFile(self):
 class ConvertCansas(ExampleFile):
    def write(self, exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]):
 	   self.createFile()
+       
            for i,files in enumerate(exp_files):
+               
                    self.createEntry("sasentry0%i"%(i+1))
 	           self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
 	           file_i = file_to_convert
