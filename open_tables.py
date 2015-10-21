@@ -16,6 +16,16 @@ def print_h5_structure(h5):
 if __name__ == '__main__':
 
     if len(sys.argv) == 1:
+
+        print "Files available:"
+        for i,filenames in enumerate(os.listdir(os.getcwd())):
+            
+            if filenames.endswith(".hdf5"):
+                print filenames
+            if filenames.endswith('.h5'):
+                print filenames
+
+        
         h5 = raw_input("Write file to read:")
         if os.path.isfile(h5):
             print_h5_structure(h5)
