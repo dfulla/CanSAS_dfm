@@ -94,9 +94,10 @@ def dictionary_global(entries = ['entry01','entry02'],dictionary_data_h5 = [{},{
     
     return total_dictionary
 
-def main(file_to_read = "simple1dtimeseries.h5"):
+def main(file_to_read):
 
     if CanSAS_file_exists(file_to_read):
+        #print "doing"
         content_h5 = h5_get_structure(file_to_read)
         list_of_dsets = dsets_extract(content_h5)
         list_of_dsets_id = dsets_id_extract(content_h5)
@@ -110,15 +111,26 @@ def main(file_to_read = "simple1dtimeseries.h5"):
         dictionary_list = [dictionary_data,{}]
         complete_dictionary = dictionary_global(['entry01','entry02'], dictionary_list)  # need to extract these entries from the file_to_read
 
-       
+        print "task done"
         return complete_dictionary
+    else:
+        print "Could not do it. Check main()"
             
 if __name__ == '__main__':
 
     if len(sys.argv) == 1:
-        main()
+        file_to_read = raw_input("Write file to read: ")
+        main(file_to_read)
 
     if len(sys.argv) == 2:
         file_to_read = sys.argv[1]
         if os.path.isfile(file_to_read):
             main(file_to_read)
+        else:
+            print "File %s not found."%file_to_read
+            file_to_read = raw_input("Write file to read: ")
+            if os.path.isfile(file_to_read):
+                main(file_to_read)
+            
+
+            
