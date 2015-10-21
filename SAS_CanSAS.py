@@ -12,6 +12,21 @@ Reads and extracts data from one reduced experimental SAXS file (e.g.H2O_100pc_2
 Creates a new hdf5 file with CanSAS format (H2O_100pc_2D_0.051kG.ABS.hdf5).   
 Writes the information from the experimental file to the hdf5-CanSAS format file.
 
+
+SASroot
+  SASentry       
+    SASdata
+      @name=“D2O_100pc"
+      @Q_indices=1,2
+      @I_axes=“M,Q,Q”
+	@M_indices=0
+      I: float[2,128,128]
+      Qx: float[128,128]
+      Qy: float[128,128]
+      Qz: float[128,128]
+      M: float[2]
+
+
 CanSAS format described in:
 http://www.cansas.org/formats/canSAS2012/1.0/doc/framework.html
 http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
@@ -92,11 +107,8 @@ def get_magnetic_fields(exp_files):
                 magnetic_field =  sample.split('2D_')[1].split('kG.ABS')[0]
                 if '_' in magnetic_field:
                         magnetic_field = magnetic_field.replace('_','.')
-                
-        magnetic_fields = [0.051,15.5] # from files
-
-get_magnetic_fields(exp_files)
-        
+                print magnetic_field
+                return magnetic_field        
         
 def get_columns(file_content = ""):
   
