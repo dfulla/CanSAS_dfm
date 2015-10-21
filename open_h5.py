@@ -117,8 +117,16 @@ def main(file_to_read):
         print "Could not do it. Check main()"
             
 if __name__ == '__main__':
-
+    
+    print "Files available:"
     if len(sys.argv) == 1:
+        
+        for i,filenames in enumerate(os.listdir(os.getcwd())):
+            
+            if filenames.endswith(".hdf5"):
+                print filenames
+            if filenames.endswith('.h5'):
+                print filenames
         file_to_read = raw_input("Write file to read: ")
         main(file_to_read)
 
