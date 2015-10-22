@@ -99,11 +99,6 @@ class ExampleFile:
 			for key in attributes.keys():
 				ds.attrs[key] = attributes[key]
 
-# is this function going to be used now?
-def file_read(exp_file = file_to_convert):
-    file_open = (open(exp_file).readlines())
-    return exp_file,file_open
-
 
 def get_magnetic_fields(exp_files):
         #shall it do it automatically?
@@ -115,10 +110,10 @@ def get_magnetic_fields(exp_files):
                 magnetic_field_files.append(magnetic_field)
         return magnetic_field_files        
         
-def get_columns(file_content = ""):
+def get_columns(file_data):
   
     try:
-      Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS = np.loadtxt(file_content,unpack=True, skiprows = 19,dtype=[('Qx','<f8'),('Qy','<f8'),('I(Qx,Qy)','<f8'),('err(I)','<f8'),('Qz','<f8'),('SigmaQ_parall','<f8'),('SigmaQ_perp','<f8'),('fSubS(beam stop shadow)','<f8')])
+      Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS = np.loadtxt(file_data,unpack=True, skiprows = 19,dtype=[('Qx','<f8'),('Qy','<f8'),('I(Qx,Qy)','<f8'),('err(I)','<f8'),('Qz','<f8'),('SigmaQ_parall','<f8'),('SigmaQ_perp','<f8'),('fSubS(beam stop shadow)','<f8')])
       Qx = np.reshape(Qx,(128,128))
       Qy = np.reshape(Qy,(128,128))
       Qz = np.reshape(Qz,(128,128))
@@ -127,7 +122,7 @@ def get_columns(file_content = ""):
       return Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS
 
     except:
-      print "Could not extract data columns from %s. Check that the heather has 19 rows"%file_content
+      print "Could not extract data columns from %s. Check that the heather has 19 rows"%file_data
    
 def createFile(self):
     self.f = h5py.File(self.name, "w")
