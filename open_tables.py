@@ -3,6 +3,11 @@ import os
 import sys
 
 
+# to develop:
+# extract values of attributes
+
+
+
 def print_h5_structure(h5):
 
     if os.path.isfile(h5):
