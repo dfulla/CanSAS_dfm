@@ -45,10 +45,8 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 # generalize sasdata01...
 # get the name from the file and write it as a title
 
-#exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
-#exp_files = ["H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
-
-#file_to_convert = exp_files[1]
+#exp_files1 = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
+#exp_files2 = ["H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
 
 FILE_TIMESTAMP = time.strftime("%Y-%m-%dT%H:%M:%S")
 FILE_TIMESTAMP += '%+03d%02d' % (-time.timezone/60/60, abs(time.timezone/60) % 60)
@@ -75,7 +73,9 @@ class ExampleFile:
 		self.sasentry.attrs["version"] = "1.0"
 	
 	def createTitle(self, title):
+        
 		self.sasentry.create_dataset('Title', (), data=title)
+        
 	
 	def createData(self, name, qi, ii, mi=None, attributes=None):
 		self.sasdata = self.sasentry.create_group(name)
@@ -115,9 +115,7 @@ def get_name_sample(exp_files):
     else:
         print 'Names of the two files are not coincident'
 
-#get_name_sample(exp_files)
-
-
+        
 def get_columns(file_data):
   
     try:
@@ -145,6 +143,7 @@ class ConvertCansas(ExampleFile):
            print 'Files beeing read: %s'%str(exp_files)
            self.createFile() 
            self.createEntry("sasentry01")
+           self.createTitle(get_name_sample(exp_files))
            self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
 
            # going to assume that Qx,Qy, Qz are equal. I am going to verify it later
