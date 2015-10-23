@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 import h5py
 import os
@@ -13,18 +15,7 @@ Creates a new hdf5 file with CanSAS format (H2O_100pc_2D_0.051kG.ABS.hdf5).
 Writes the information from the experimental file to the hdf5-CanSAS format file.
 
 
-SASroot
-  SASentry       
-    SASdata
-      @name=“D2O_100pc"
-      @Q_indices=1,2
-      @I_axes=“M,Q,Q”
-	@M_indices=0
-      I: float[2,128,128]
-      Qx: float[128,128]
-      Qy: float[128,128]
-      Qz: float[128,128]
-      M: float[2]
+
 
 
 CanSAS format described in:
@@ -33,6 +24,19 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 
 
 '''
+
+#SASroot
+#  SASentry       
+#    SASdata
+#      @name=“D2O_100pc"
+#      @Q_indices=1,2
+#      @I_axes=“M,Q,Q”
+#        @M_indices=0
+#      I: float[2,128,128]
+#      Qx: float[128,128]
+#      Qy: float[128,128]
+#      Qz: float[128,128]
+#      M: float[2]
 
 ### UNDER DEVELOPMENT ###
 
@@ -43,11 +47,11 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 # correct I
 # make I_axes and Q_indices dynamic
 # generalize sasdata01...
+# get the name from the file and write it as a title
 
 
-
-#exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
-exp_files = ["H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
+exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
+#exp_files = ["H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
 
 file_to_convert = exp_files[1]
 
@@ -95,33 +99,30 @@ class ExampleFile:
 			for key in attributes.keys():
 				ds.attrs[key] = attributes[key]
 
-# is this function being used?
-def file_read(exp_file = file_to_convert):
-    file_open = (open(exp_file).readlines())
-    return exp_file,file_open
-
 
 def get_magnetic_fields(exp_files):
         #shall it do it automatically?
+        magnetic_field_files = []
         for sample in exp_files:
                 magnetic_field =  sample.split('2D_')[1].split('kG.ABS')[0]
                 if '_' in magnetic_field:
                         magnetic_field = magnetic_field.replace('_','.')
-                print magnetic_field
-                return magnetic_field        
+                magnetic_field_files.append(magnetic_field)
+        return magnetic_field_files        
         
-def get_columns(file_content = ""):
+def get_columns(file_data):
   
     try:
-      Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS = np.loadtxt(file_content,unpack=True, skiprows = 19,dtype=[('Qx','<f8'),('Qy','<f8'),('I(Qx,Qy)','<f8'),('err(I)','<f8'),('Qz','<f8'),('SigmaQ_parall','<f8'),('SigmaQ_perp','<f8'),('fSubS(beam stop shadow)','<f8')])
+      Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS = np.loadtxt(file_data,unpack=True, skiprows = 19,dtype=[('Qx','<f8'),('Qy','<f8'),('I(Qx,Qy)','<f8'),('err(I)','<f8'),('Qz','<f8'),('SigmaQ_parall','<f8'),('SigmaQ_perp','<f8'),('fSubS(beam stop shadow)','<f8')])
       Qx = np.reshape(Qx,(128,128))
       Qy = np.reshape(Qy,(128,128))
+      Qz = np.reshape(Qz,(128,128))
       I  = np.reshape(I ,(128,128))
 
       return Qx, Qy, I, err_I, Qz, SigmaQ_parall, SigmaQ_perp, fSubS
 
     except:
-      print "Could not extract data columns from %s. Check that the heather has 19 rows"%file_content
+      print "Could not extract data columns from %s. Check that the heather has 19 rows"%file_data
    
 def createFile(self):
     self.f = h5py.File(self.name, "w")
@@ -132,17 +133,32 @@ def createFile(self):
 
 class ConvertCansas(ExampleFile):
    def write(self, exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]):
-	   self.createFile()
-       
-           for i,files in enumerate(exp_files):
-               
-                   self.createEntry("sasentry0%i"%(i+1))
-	           self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
-	           file_i = file_to_convert
-                   Qx,Qy,I = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[2]
-	           self.createDataSet("Qx", Qx, {"units": "1/A"})
-	           self.createDataSet("Qy", Qy, {"units": "1/A"})
-	           self.createDataSet("I", I, {"units": "1/cm"})
+
+           self.createFile() 
+           self.createEntry("sasentry01")
+           self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
+
+           # going to assume that Qx,Qy, Qz are equal. I am going to verify it later
+           file_i = file_to_convert
+           Qx,Qy,Qz = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[4]
+           I = get_columns(file_i)[2]
+           
+           #self.createDataSet("Qx", Qx, {"units": "1/A"})           
+           M = np.array(get_magnetic_fields(exp_files))           
+           I_array = [M]
+           I_2 =[]
+           for i,sample in enumerate(exp_files):
+                   I_array.append(get_columns(exp_files[i])[2])
+                   I_2.append(get_columns(exp_files[i])[2])
+
+           I_array = np.array(I_array)
+           
+	   self.createDataSet("Qx", Qx, {"units": "1/A"})
+	   self.createDataSet("Qy", Qy, {"units": "1/A"})
+           self.createDataSet("Qz", Qz, {"units": "1/A"})
+           self.createDataSet("M",  M,  {"units":  "kG"})       
+	   self.createDataSet("I_1", I_2[0], {"units": "1/cm"}) # likely to be wrong! Check
+           self.createDataSet("I_2", I_2[1], {"units": "1/cm"}) # likely to be wrong! Check        
 	   self.closeFile()
     
 def main(exp_file = file_to_convert):
