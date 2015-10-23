@@ -153,22 +153,41 @@ class ConvertCansas(ExampleFile):
            Qx,Qy,Qz = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[4]
 
            I = get_columns(file_i)[2]  # intensity only from first file!
-
            M = np.array(get_magnetic_fields(exp_files))
-           I_array = [M]
+
+           #M = get_magnetic_fields(exp_files)
+           print M
+
+           I_array = [M] # start list of 3D Intensity
+           
            I_2 =[]
            for i,sample in enumerate(exp_files):
                    I_array.append(get_columns(exp_files[i])[2])
-                   I_2.append(get_columns(exp_files[i])[2])
+                   I_2.append(get_columns(exp_files[i])[2])     # sets the intensity of the two samples into I_2
 
            I_array = np.array(I_array)
+
+           print I_array.shape
+           #I_array.reshape(I_array,(2,128,128))
+
+
+           print I_array[0].shape
+           print I_array[1].shape
+           print I_array[2].shape
+
+           I_h5 = np.array([[I_array[0]],[I_array[1]],[I_array[2]]]) # need to create array of arrays (2,128,128)
+           print I_h5.shape
+           print I_h5[0]
+           print len(I_h5[1][0])
+           
            
 	   self.createDataSet("Qx", Qx, {"units": "1/A"})
 	   self.createDataSet("Qy", Qy, {"units": "1/A"})
            self.createDataSet("Qz", Qz, {"units": "1/A"})
-           self.createDataSet("M",  M,  {"units":  "kG"})       
-	   self.createDataSet("I_1", I_2[0], {"units": "1/cm"}) # likely to be wrong! Check
-           self.createDataSet("I_2", I_2[1], {"units": "1/cm"}) # likely to be wrong! Check        
+           self.createDataSet("M",  M,  {"units":  "kG"})
+           #self.createDataSet("I", I_h5[0], {"units": "1/cm"}) # likely to be wrong! Check
+	   self.createDataSet("I_1", I_2[0], {"units": "1/cm"}) # intensity from first file
+           self.createDataSet("I_2", I_2[1], {"units": "1/cm"}) # intensity from second file        
 	   self.closeFile()
 
 def main(exp_files):
