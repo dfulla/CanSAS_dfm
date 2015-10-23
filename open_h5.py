@@ -87,12 +87,15 @@ def dictionary_dset_data(list_of_dsets = [],list_of_data = []):
     else:
         print "number of datasets and data do not coincide"
     
-def dictionary_global(entries = ['entry01','entry02'],dictionary_data_h5 = [{},{}]):
+#def dictionary_global(entries = ['entry01','entry02'],dictionary_data_h5 = [{},{}]):
+def dictionary_global(entries = ['entry01'],dictionary_data_h5 = [{},{}]):   
+    
     total_dictionary = {}
     for i, item in enumerate(entries):
         total_dictionary[item] = dictionary_data_h5[i]
     
     return total_dictionary
+
 
 def main(file_to_read):
 
@@ -109,7 +112,8 @@ def main(file_to_read):
 
         dictionary_data = dictionary_dset_data(list_of_dsets_id, list_of_data)
         dictionary_list = [dictionary_data,{}]
-        complete_dictionary = dictionary_global(['entry01','entry02'], dictionary_list)  # need to extract these entries from the file_to_read
+        #complete_dictionary = dictionary_global(['entry01','entry02'], dictionary_list)  # need to extract these entries from the file_to_read
+        complete_dictionary = dictionary_global(['entry01'], dictionary_list)  # need to extract these entries from the file_to_read
 
         print "task done"
         return complete_dictionary
