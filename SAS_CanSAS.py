@@ -143,7 +143,7 @@ class ConvertCansas(ExampleFile):
            print 'Files beeing read: %s'%str(exp_files)
            self.createFile() 
            self.createEntry("sasentry01")
-           self.createTitle(get_name_sample(exp_files))
+           #self.createTitle(get_name_sample(exp_files))
            self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
 
            # going to assume that Qx,Qy, Qz are equal. I am going to verify it later
@@ -175,12 +175,20 @@ def main(exp_files):
     name_sample = get_name_sample(exp_files)
     ConvertCansas("%s.hdf5"%name_sample).write(exp_files)
     if os.path.isfile("%s.hdf5"%name_sample): # caution: if file was created it will also give a True
-            print 'File: %s created'%name_sample
+            print 'File: %s.hdf5 created'%name_sample
             
 
 if __name__ == "__main__":
 
-    main(exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"])
+    if len(sys.argv) == 1:
+
+        main(exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"])
+            
+    if len(sys.argv) == 3:
+        exp_files = ['%s'%str(sys.argv[1]),'%s'%(str(sys.argv[2]))]
+        print exp_files
+        main(exp_files)
+   
         
 
       
