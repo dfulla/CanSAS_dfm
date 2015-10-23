@@ -72,14 +72,13 @@ class ExampleFile:
 		self.sasentry.attrs["NX_class"] = "SASentry"
 		self.sasentry.attrs["version"] = "1.0"
 	
-	def createTitle(self, title):
-        
+	def createTitle(self, title):                                        # not being used yet. Check
 		self.sasentry.create_dataset('Title', (), data=title)
         
 	
 	def createData(self, name, qi, ii, mi=None, attributes=None):
 		self.sasdata = self.sasentry.create_group(name)
-		self.sasdata.attrs["NX_class"] = "SASdata"
+		self.sasdata.attrs["NX_class"] = "SASdata"                   # here could go the name of the sample
 		self.sasdata.attrs["Q_indices"] = qi
 		self.sasdata.attrs["I_axes"] = ii
 		if mi != None:
@@ -112,7 +111,8 @@ def get_name_sample(exp_files):
     
     if all(x == name_sample[0] for x in name_sample):
         return name_sample[0]
-    else:
+    else:    
+        print name_sample      
         print 'Names of the two files are not coincident'
 
         
@@ -182,8 +182,30 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 1:
 
-        main(exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"])
-            
+        print "Files available:"
+        files_available = []
+        
+        for i,filenames in enumerate(os.listdir(os.getcwd())):    
+            if filenames.endswith(".ABS"):
+                files_available.append(filenames)
+        if len(files_available) == 4:
+                    print '%s %s'%(files_available[0],files_available[1])
+                    print '%s %s'%(files_available[2],files_available[3])
+        else:
+                print files_available
+
+        exp_files = raw_input('Choose two files to read (e.g. D2O_100pc_2D_0.051kG.ABS D2O_100pc_2D_15_5kG.ABS):\n')   
+        if exp_files.split(' ') > 1:
+              print exp_files
+              file1 = exp_files.split(' ')[0]
+              file2 = exp_files.split(' ')[1]
+              exp_files = ['%s'%file1,'%s'%file2]
+        main(exp_files)
+
+    if len(sys.argv) == 2:
+            print 'Running an example with file combination D2O_100pc_2D_0.051kG.ABS D2O_100pc_2D_15_5kG.ABS'
+            main(['D2O_100pc_2D_0.051kG.ABS','D2O_100pc_2D_15_5kG.ABS'])
+        
     if len(sys.argv) == 3:
         exp_files = ['%s'%str(sys.argv[1]),'%s'%(str(sys.argv[2]))]
         print exp_files
