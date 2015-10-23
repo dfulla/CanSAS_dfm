@@ -14,10 +14,6 @@ Reads and extracts data from one reduced experimental SAXS file (e.g.H2O_100pc_2
 Creates a new hdf5 file with CanSAS format (H2O_100pc_2D_0.051kG.ABS.hdf5).   
 Writes the information from the experimental file to the hdf5-CanSAS format file.
 
-
-
-
-
 CanSAS format described in:
 http://www.cansas.org/formats/canSAS2012/1.0/doc/framework.html
 http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
@@ -49,11 +45,10 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 # generalize sasdata01...
 # get the name from the file and write it as a title
 
-
-exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
+#exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
 #exp_files = ["H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
 
-file_to_convert = exp_files[1]
+#file_to_convert = exp_files[1]
 
 FILE_TIMESTAMP = time.strftime("%Y-%m-%dT%H:%M:%S")
 FILE_TIMESTAMP += '%+03d%02d' % (-time.timezone/60/60, abs(time.timezone/60) % 60)
@@ -101,15 +96,28 @@ class ExampleFile:
 
 
 def get_magnetic_fields(exp_files):
-        #shall it do it automatically?
-        magnetic_field_files = []
-        for sample in exp_files:
+    #shall it do it automatically?
+    magnetic_field_files = []
+    for sample in exp_files:
                 magnetic_field =  sample.split('2D_')[1].split('kG.ABS')[0]
                 if '_' in magnetic_field:
                         magnetic_field = magnetic_field.replace('_','.')
                 magnetic_field_files.append(magnetic_field)
-        return magnetic_field_files        
-        
+    return magnetic_field_files
+
+def get_name_sample(exp_files):
+    name_sample = []
+    for i,sample in enumerate(exp_files):
+        name_sample.append(sample.split('_2D')[0])
+    
+    if all(x == name_sample[0] for x in name_sample):
+        return name_sample[0]
+    else:
+        print 'Names of the two files are not coincident'
+
+#get_name_sample(exp_files)
+
+
 def get_columns(file_data):
   
     try:
@@ -132,19 +140,22 @@ def createFile(self):
 
 
 class ConvertCansas(ExampleFile):
-   def write(self, exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]):
+   def write(self, exp_files):
 
+           print 'Files beeing read: %s'%str(exp_files)
            self.createFile() 
            self.createEntry("sasentry01")
            self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
 
            # going to assume that Qx,Qy, Qz are equal. I am going to verify it later
-           file_i = file_to_convert
+
+           file_i = exp_files[0] # caution : only reading first file !
+    
            Qx,Qy,Qz = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[4]
-           I = get_columns(file_i)[2]
-           
-           #self.createDataSet("Qx", Qx, {"units": "1/A"})           
-           M = np.array(get_magnetic_fields(exp_files))           
+
+           I = get_columns(file_i)[2]  # intensity only from first file!
+
+           M = np.array(get_magnetic_fields(exp_files))
            I_array = [M]
            I_2 =[]
            for i,sample in enumerate(exp_files):
@@ -160,13 +171,17 @@ class ConvertCansas(ExampleFile):
 	   self.createDataSet("I_1", I_2[0], {"units": "1/cm"}) # likely to be wrong! Check
            self.createDataSet("I_2", I_2[1], {"units": "1/cm"}) # likely to be wrong! Check        
 	   self.closeFile()
-    
-def main(exp_file = file_to_convert):
-    ConvertCansas("%s.hdf5"%file_to_convert).write()
+
+def main(exp_files):
+    name_sample = get_name_sample(exp_files)
+    ConvertCansas("%s.hdf5"%name_sample).write(exp_files)
+    if os.path.isfile("%s.hdf5"%name_sample): # caution: if file was created it will also give a True
+            print 'File: %s created'%name_sample
+            
 
 if __name__ == "__main__":
 
-    main()
+    main(exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"])
         
 
       
