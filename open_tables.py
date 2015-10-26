@@ -17,6 +17,19 @@ def print_h5_structure(h5):
     
     else:
         print "Could not locate file %s"%h5
+
+
+def get_last_file():
+    
+    import subprocess
+    last_file = subprocess.Popen(["ls","-ltr"], stdout = subprocess.PIPE)
+    last_file = last_file.communicate()[0].split('\n')[-2].split(' ')[-1]
+    if '.hdf5' in last_file:
+        return last_file
+    else:
+        #print last_file
+        return ''
+    
         
 if __name__ == '__main__':
 
@@ -30,12 +43,29 @@ if __name__ == '__main__':
             if filenames.endswith('.h5'):
                 print filenames
 
+        last_file = get_last_file()
+        if '.hdf5' in last_file:
+            print "Last file: %s. Press enter to read the structure"%last_file
+
         
         h5 = raw_input("Write file to read:")
+
+        if h5 == '':
+            
+            last_file = get_last_file()
+            print 'Printing structure of last modified hdf5: %s'%last_file
+            print_h5_structure(last_file)
+        
         if os.path.isfile(h5):
             print_h5_structure(h5)
         else:
-            print "file %s not found"
+            if h5 != '':
+                print "file %s not found"%h5
+
+
+            
+
+            
     
     if len(sys.argv) == 2:
         h5 = sys.argv[1]
