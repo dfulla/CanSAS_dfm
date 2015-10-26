@@ -161,13 +161,23 @@ class ConvertCansas(ExampleFile):
                    I_array.append(get_columns(exp_files[i])[2])
                    I_2.append(get_columns(exp_files[i])[2])     # sets the intensity of the two samples into I_2
 
+
+           try_array = np.empty([2,128,128])
+           try_array[0] = I_2[0]
+           try_array[1] = I_2[1]
+
+           print try_array.shape
+                   
 	   self.createDataSet("Qx", Qx, {"units": "1/A"})
 	   self.createDataSet("Qy", Qy, {"units": "1/A"})
            self.createDataSet("Qz", Qz, {"units": "1/A"})
            self.createDataSet("M",  M,  {"units":  "kG"})
+           
 	   self.createDataSet("I_1", I_2[0], {"units": "1/cm"}) # intensity from first file
            self.createDataSet("I_2", I_2[1], {"units": "1/cm"}) # intensity from second file        
 	   self.closeFile()
+           #print I_2.shape
+           print I_2[0].shape
 
 def main(exp_files):
     name_sample = get_name_sample(exp_files)
