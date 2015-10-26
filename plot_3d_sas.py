@@ -3,6 +3,7 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import sys
 
 exp_files = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS","H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
 file_content = exp_files[3]
@@ -25,4 +26,7 @@ def plot3d(file_content):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) == 1:
         plot3d(file_content)
+
+    print len(sys.argv)
