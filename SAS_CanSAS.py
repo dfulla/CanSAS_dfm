@@ -172,13 +172,10 @@ class ConvertCansas(ExampleFile):
 	   self.createDataSet("Qy", Qy, {"units": "1/A"})
            self.createDataSet("Qz", Qz, {"units": "1/A"})
            self.createDataSet("M",  M,  {"units":  "kG"})
-           
-	   self.createDataSet("I_1", I_2[0], {"units": "1/cm"}) # intensity from first file
-           self.createDataSet("I_2", I_2[1], {"units": "1/cm"}) # intensity from second file        
-	   self.closeFile()
-           #print I_2.shape
-           print I_2[0].shape
 
+           self.createDataSet("I_array", try_array, {"units": "1/cm"}) # intensity from both files          
+	   self.closeFile()
+        
 def main(exp_files):
     name_sample = get_name_sample(exp_files)
     ConvertCansas("%s.hdf5"%name_sample).write(exp_files)
