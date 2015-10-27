@@ -185,8 +185,6 @@ class ConvertCansas(ExampleFile):
            self.createDataSet("I_array", intensities_array, {"units": "1/cm"}) # intensity from both files
            #self.createDataSet("I_3D", I_3D, {"units": "1/cm"}) # error gotten (TypeError: Object dtype dtype('O') has no native HDF5 equivalent) 
 	   self.closeFile()
-
-           #print type(intensities_array[1])
         
 def main(exp_files):
     name_sample = get_name_sample(exp_files)
