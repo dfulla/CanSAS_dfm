@@ -94,6 +94,10 @@ class ExampleFile:
 				ds.attrs[key] = attributes[key]
 
 
+
+
+
+                                
 def get_magnetic_fields(exp_files):
     #shall it do it automatically?
     magnetic_field_files = []
@@ -101,7 +105,8 @@ def get_magnetic_fields(exp_files):
                 magnetic_field =  sample.split('2D_')[1].split('kG.ABS')[0]
                 if '_' in magnetic_field:
                         magnetic_field = magnetic_field.replace('_','.')
-                magnetic_field_files.append(magnetic_field)
+                magnetic_field_files.append(float(magnetic_field))
+                
     return magnetic_field_files
 
 def get_name_sample(exp_files):
@@ -146,7 +151,7 @@ class ConvertCansas(ExampleFile):
            #self.createTitle(get_name_sample(exp_files))
            self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
 
-           # going to assume that Qx,Qy, Qz are equal. I am going to verify it later
+           # going to assume that Qx,Qy, Qz are equal for both files. I am going to verify it later
 
            file_i = exp_files[0] # caution : only reading first file !
     
@@ -174,11 +179,14 @@ class ConvertCansas(ExampleFile):
            self.createDataSet("Qz", Qz, {"units": "1/A"})
            self.createDataSet("M",  M,  {"units":  "kG"})
 
+           #self.createDataSet("test",(2,128,128), )
+
+           
            self.createDataSet("I_array", intensities_array, {"units": "1/cm"}) # intensity from both files
            #self.createDataSet("I_3D", I_3D, {"units": "1/cm"}) # error gotten (TypeError: Object dtype dtype('O') has no native HDF5 equivalent) 
 	   self.closeFile()
 
-           print type(intensities_array[1])
+           #print type(intensities_array[1])
         
 def main(exp_files):
     name_sample = get_name_sample(exp_files)
