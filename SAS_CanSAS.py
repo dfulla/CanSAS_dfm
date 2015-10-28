@@ -188,10 +188,6 @@ if __name__ == "__main__":
                 print files_available
 
         exp_files = raw_input('Choose two files to read (e.g. D2O_100pc_2D_0.051kG.ABS D2O_100pc_2D_15_5kG.ABS):\n')
-
-        print exp_files
-        print os.path.isfile(exp_files[0])
-
         
         if exp_files.split(' ') > 1:
               print exp_files
@@ -206,9 +202,11 @@ if __name__ == "__main__":
         
     if len(sys.argv) == 3:
         exp_files = ['%s'%str(sys.argv[1]),'%s'%(str(sys.argv[2]))]
-        print exp_files
-        main(exp_files)
+        if os.path.isfile(exp_files[0]) == True:
+            if os.path.isfile(exp_files[1]) == True:
+                main(exp_files)    
    
-        
+        else:
+            print "Files not found"
 
       
