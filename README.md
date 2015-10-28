@@ -4,7 +4,7 @@
 <p> Files: </p>
 
 1. SAS_CanSAS.py
-* Extracts Qx,Qy and I(Qx,Qy) from two files.  
+  1. Extracts Qx,Qy and I(Qx,Qy) from two files.  
 * Creates an h5 file.  
 * Inputs the data from the two files into the h5 file following the CanSAS format.  
 2. open_tables.py
