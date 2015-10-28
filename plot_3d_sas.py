@@ -20,13 +20,37 @@ def plot3d(file_content):
 	ax.set_ylabel("Qy")
 	ax.set_zlabel("I")
 	ax.plot_trisurf(Qx,Qy,I,cmap=cm.jet,linewidth=0.2)
+        print type(Qx)
+        print type(Qy)
+        print type(I)
+        print Qx.shape
+        print Qy.shape
+        print I.shape
 	plt.show()
     else:
 	print "Cannot find the file %s"%file_content
 
 
+def plot3d_from_array(axis_x,axis_y,I_file1,I_file2):
+
+    fig = plt.figure(figsize =(20,10))
+    plt.figsize = (12,5)
+    
+    ax = fig.add_subplot(1,2,1, projection = '3d')
+    ax.set_xlabel("Qx")
+    ax.set_ylabel("Qy")
+    ax.set_zlabel("I(Qx,Qy)")
+    ax.plot_trisurf(axis_x,axis_y,I_file1, cmap=cm.jet,linewidth=0.2)
+    ay = fig.add_subplot(1,2,2, projection = '3d')
+    ay.set_xlabel("Qx")
+    ay.set_ylabel("Qy")
+    ay.set_zlabel("I(Qx,Qy)")
+    ay.plot_trisurf(axis_x,axis_y,I_file2, cmap=cm.jet,linewidth=0.2)
+    plt.show()
+
 if __name__ == '__main__':
     if len(sys.argv) == 1:
+        print 'plotting...wait 0.5 min...'
         plot3d(file_content)
 
     print len(sys.argv)
