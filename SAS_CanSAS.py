@@ -34,17 +34,7 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 #      Qz: float[128,128]
 #      M: float[2]
 
-### UNDER DEVELOPMENT ###
-
-# lacking:
-# Magnetic field
-# renaming
-# efficiency
-# correct I
-# make I_axes and Q_indices dynamic
-# generalize sasdata01...
-# get the name from the file and write it as a title
-
+#example files:
 #exp_files1 = ["D2O_100pc_2D_0.051kG.ABS","D2O_100pc_2D_15_5kG.ABS"]
 #exp_files2 = ["H2O_100pc_2D_0.051kG.ABS","H2O_100pc_2D_15.5kG.ABS"]
 
@@ -94,12 +84,9 @@ class ExampleFile:
 				ds.attrs[key] = attributes[key]
 
 
-
-
-
                                 
 def get_magnetic_fields(exp_files):
-    #shall it do it automatically?
+        
     magnetic_field_files = []
     for sample in exp_files:
                 magnetic_field =  sample.split('2D_')[1].split('kG.ABS')[0]
