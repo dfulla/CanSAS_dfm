@@ -1,7 +1,10 @@
 # CanSAS_dfm
 #
-SAS_CanSAS.py
-open_tables.py
-open_h5.py
-open_h5_class.py
-plot_3d_sas.py
+
+<p> Files: </p>
+
+1. SAS_CanSAS.py
+2. open_tables.py
+3. open_h5.py
+4. open_h5_class.py
+5. plot_3d_sas.py
