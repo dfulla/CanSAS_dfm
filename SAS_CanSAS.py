@@ -190,11 +190,17 @@ if __name__ == "__main__":
         exp_files = raw_input('Choose two files to read (e.g. D2O_100pc_2D_0.051kG.ABS D2O_100pc_2D_15_5kG.ABS):\n')
         
         if exp_files.split(' ') > 1:
-              print exp_files
-              file1 = exp_files.split(' ')[0]
-              file2 = exp_files.split(' ')[1]
-              exp_files = ['%s'%file1,'%s'%file2]
-        main(exp_files)
+              try:  
+                      print exp_files
+                      file1 = exp_files.split(' ')[0]
+                      file2 = exp_files.split(' ')[1]
+                      exp_files = ['%s'%file1,'%s'%file2]
+                      main(exp_files)
+              except:
+                      print 'Unable to process %s. Use the following structure: D2O_100pc_2D_0.051kG.ABS D2O_100pc_2D_15_5kG.ABS'%exp_files
+                      
+        else:
+              print 'Unable to process %s. Use the following structure: D2O_100pc_2D_0.051kG.ABS D2O_100pc_2D_15_5kG.ABS'%exp_files
 
     if len(sys.argv) == 2:
             print 'Running an example with file combination D2O_100pc_2D_0.051kG.ABS D2O_100pc_2D_15_5kG.ABS'
