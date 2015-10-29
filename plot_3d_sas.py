@@ -48,9 +48,17 @@ def plot3d_from_array(axis_x,axis_y,I_file1,I_file2):
     ay.plot_trisurf(axis_x,axis_y,I_file2, cmap=cm.jet,linewidth=0.2)
     plt.show()
 
+def plot2d_from_array(axis_x, axis_y):
+    fig = plt.figure()
+    plt.plot(axis_x,axis_y)
+    plt.show()
+
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         print 'plotting...wait 0.5 min...'
-        plot3d(file_content)
+        
+        #plot3d(file_content)
 
+        plot2d_from_array([1,2,3,4],[4,3,5,6])
+        
     print len(sys.argv)
