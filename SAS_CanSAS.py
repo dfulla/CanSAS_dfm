@@ -62,13 +62,8 @@ class ExampleFile:
 		self.sasentry.attrs["NX_class"] = "SASentry"
 		self.sasentry.attrs["version"] = "1.0"
 	
-	def createTitle(self, title):                                        # not being used yet. Check
-		self.sasentry.create_dataset('Title', (), data=title)
-        
-	
 	def createData(self, name, name_sample, qi, ii, m, mi=None, attributes=None):
 		self.sasdata = self.sasentry.create_group(name)
-		#self.sasdata.attrs["NX_class"] = "SASdata"   # here could go the name of the sample
                 self.sasdata.attrs["name"] = name_sample
 		self.sasdata.attrs["Q_indices"] = qi
 		self.sasdata.attrs["I_axes"] = ii
@@ -84,8 +79,7 @@ class ExampleFile:
 		if attributes != None:
 			for key in attributes.keys():
 				ds.attrs[key] = attributes[key]
-
-
+                                
                                 
 def get_magnetic_fields(exp_files):
         
@@ -125,32 +119,21 @@ def get_columns(file_data):
       print "Could not extract data columns from %s. Check that the heather has 19 rows"%file_data
    
 
-
 class ConvertCansas(ExampleFile):
    def write(self, exp_files):
 
            print 'Files beeing read: %s'%str(exp_files)
            self.createFile() 
            self.createEntry("sasentry01")
-           #self.createTitle(get_name_sample(exp_files))
            sample_name = get_name_sample(exp_files)
-           print sample_name
            self.createData("sasdata01",sample_name ,"1,2" ,"M, Q, Q","0")
-
-           # going to assume that Qx,Qy, Qz are equal for both files. I am going to verify it later
-
-           file_i = exp_files[0] # caution : only reading first file !
-    
+           file_i = exp_files[0]
            Qx,Qy,Qz = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[4]
-
            I = get_columns(file_i)[2]  # intensity only from first file!
-           M = np.array(get_magnetic_fields(exp_files))
-
-           I_array = [M] # start list of 3D Intensity           
+           M = np.array(get_magnetic_fields(exp_files))  
            I_2 =[]
            for i,sample in enumerate(exp_files):
-                   I_array.append(get_columns(exp_files[i])[2])
-                   I_2.append(get_columns(exp_files[i])[2])     # sets the intensity of the two samples into I_2
+                   I_2.append(get_columns(exp_files[i])[2])
 
            intensities_array = np.empty([2,128,128])
            intensities_array[0] = I_2[0]
@@ -166,10 +149,9 @@ class ConvertCansas(ExampleFile):
 def main(exp_files):
     name_sample = get_name_sample(exp_files)
     ConvertCansas("%s.hdf5"%name_sample).write(exp_files)
-    if os.path.isfile("%s.hdf5"%name_sample): # caution: if file was created it will also give a True
+    if os.path.isfile("%s.hdf5"%name_sample):
             print 'File: %s.hdf5 created'%name_sample
             
-
 if __name__ == "__main__":
 
     if len(sys.argv) == 1:
