@@ -2,7 +2,7 @@ import plot_3d_sas as p
 import open_h5 as oh
 import numpy as np
 import matplotlib.pyplot as plt
-
+import sys
 
 
 def plot_3d_2datasets(h5File):
@@ -24,6 +24,14 @@ def plot_3d_2datasets(h5File):
 
 if __name__ == '__main__':
 
-    plot_3d_2datasets('D2O_100pc.hdf5')
-    
-    print 'done'
+    if len(sys.argv) == 1:
+        plot_3d_2datasets('D2O_100pc.hdf5')
+    if len(sys.argv) == 2:
+        if sys.argv[1].find('.h5') != -1 or sys.argv[1].find('.hdf5') != -1:
+            plot_3d_2datasets(sys.argv[1])
+        else:
+            print 'Non valid file extention (%s). Should be .h5 or .hdf5'%sys.argv[1]
+
+# http://matplotlib.org/examples/pylab_examples/hexbin_demo.html
+
+        
