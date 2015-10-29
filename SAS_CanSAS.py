@@ -61,7 +61,10 @@ class ExampleFile:
 		self.sasentry = self.f.create_group(name)
 		self.sasentry.attrs["NX_class"] = "SASentry"
 		self.sasentry.attrs["version"] = "1.0"
-	
+
+	def createTitle(self, title):                                      
+		self.sasentry.create_dataset(title, (), data=title)
+
 	def createData(self, name, name_sample, qi, ii, m, mi=None, attributes=None):
 		self.sasdata = self.sasentry.create_group(name)
                 self.sasdata.attrs["name"] = name_sample
@@ -126,7 +129,7 @@ class ConvertCansas(ExampleFile):
            self.createFile() 
            self.createEntry("sasentry01")
            sample_name = get_name_sample(exp_files)
-           #self.createTitle(sample_name)
+           self.createTitle(sample_name)
            self.createData("sasdata01", sample_name, [1,2], ["M", "Q", "Q"], [0,])
            file_i = exp_files[0]
            Qx,Qy,Qz = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[4]
