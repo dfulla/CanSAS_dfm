@@ -66,11 +66,13 @@ class ExampleFile:
 		self.sasentry.create_dataset('Title', (), data=title)
         
 	
-	def createData(self, name, qi, ii, mi=None, attributes=None):
+	def createData(self, name, name_sample, qi, ii, m, mi=None, attributes=None):
 		self.sasdata = self.sasentry.create_group(name)
-		self.sasdata.attrs["NX_class"] = "SASdata"                   # here could go the name of the sample
+		#self.sasdata.attrs["NX_class"] = "SASdata"   # here could go the name of the sample
+                self.sasdata.attrs["name"] = name_sample
 		self.sasdata.attrs["Q_indices"] = qi
 		self.sasdata.attrs["I_axes"] = ii
+                self.sasdata.attrs["M_indices"] = m
 		if mi != None:
 			self.sasdata.attrs["Mask_indices"] = mi
 		if attributes != None:
@@ -122,11 +124,6 @@ def get_columns(file_data):
     except:
       print "Could not extract data columns from %s. Check that the heather has 19 rows"%file_data
    
-def createFile(self):
-    self.f = h5py.File(self.name, "w")
-    self.f.attrs['file_name'] = self.name
-    self.f.attrs['file_time'] = FILE_TIMESTAMP
-    self.f.attrs['producer'] = FILE_PRODUCER
 
 
 class ConvertCansas(ExampleFile):
@@ -136,7 +133,9 @@ class ConvertCansas(ExampleFile):
            self.createFile() 
            self.createEntry("sasentry01")
            #self.createTitle(get_name_sample(exp_files))
-           self.createData("sasdata01","0,1,2" ,"nMAgnetic, Q, Q")
+           sample_name = get_name_sample(exp_files)
+           print sample_name
+           self.createData("sasdata01",sample_name ,"1,2" ,"M, Q, Q","0")
 
            # going to assume that Qx,Qy, Qz are equal for both files. I am going to verify it later
 
@@ -161,7 +160,7 @@ class ConvertCansas(ExampleFile):
 	   self.createDataSet("Qy", Qy, {"units": "1/A"})
            self.createDataSet("Qz", Qz, {"units": "1/A"})
            self.createDataSet("M",  M,  {"units":  "kG"})
-           self.createDataSet("I_array", intensities_array, {"units": "1/cm"})
+           self.createDataSet("I", intensities_array, {"units": "1/cm"})
 	   self.closeFile()
         
 def main(exp_files):
