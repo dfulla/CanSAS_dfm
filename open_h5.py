@@ -87,20 +87,17 @@ def dictionary_dset_data(list_of_dsets = [],list_of_data = []):
     else:
         print "number of datasets and data do not coincide"
     
-#def dictionary_global(entries = ['entry01','entry02'],dictionary_data_h5 = [{},{}]):
-def dictionary_global(entries = ['entry01'],dictionary_data_h5 = [{},{}]):   
-    
+def dictionary_global(entries = ['entry01'],dictionary_data_h5 = [{},{}]):       
     total_dictionary = {}
     for i, item in enumerate(entries):
         total_dictionary[item] = dictionary_data_h5[i]
     
     return total_dictionary
 
-
 def main(file_to_read):
 
     if CanSAS_file_exists(file_to_read):
-        #print "doing"
+
         content_h5 = h5_get_structure(file_to_read)
         list_of_dsets = dsets_extract(content_h5)
         list_of_dsets_id = dsets_id_extract(content_h5)
@@ -112,25 +109,28 @@ def main(file_to_read):
 
         dictionary_data = dictionary_dset_data(list_of_dsets_id, list_of_data)
         dictionary_list = [dictionary_data,{}]
-        #complete_dictionary = dictionary_global(['entry01','entry02'], dictionary_list)  # need to extract these entries from the file_to_read
         complete_dictionary = dictionary_global(['entry01'], dictionary_list)  # need to extract these entries from the file_to_read
 
         print "dictionary created"
         return complete_dictionary
     else:
-        print "Could not do it. Check main()"
-            
-if __name__ == '__main__':
-    
-    print "Files available:"
-    if len(sys.argv) == 1:
+        print "Could not do it. Check main() or the file you introduced."
+
+
+def print_files_available():
         
-        for i,filenames in enumerate(os.listdir(os.getcwd())):
-            
+        print "Files available:"
+        for i,filenames in enumerate(os.listdir(os.getcwd())):            
             if filenames.endswith(".hdf5"):
                 print filenames
             if filenames.endswith('.h5'):
                 print filenames
+        return filenames
+        
+if __name__ == '__main__':
+    
+    if len(sys.argv) == 1:
+        print_files_available()        
         file_to_read = raw_input("Write file to read: ")
         main(file_to_read)
 
