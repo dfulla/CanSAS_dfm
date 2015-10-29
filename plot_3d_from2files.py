@@ -32,6 +32,5 @@ if __name__ == '__main__':
         else:
             print 'Non valid file extention (%s). Should be .h5 or .hdf5'%sys.argv[1]
 
-# http://matplotlib.org/examples/pylab_examples/hexbin_demo.html
 
         
