@@ -115,7 +115,7 @@ def main(file_to_read):
         #complete_dictionary = dictionary_global(['entry01','entry02'], dictionary_list)  # need to extract these entries from the file_to_read
         complete_dictionary = dictionary_global(['entry01'], dictionary_list)  # need to extract these entries from the file_to_read
 
-        print "task done"
+        print "dictionary created"
         return complete_dictionary
     else:
         print "Could not do it. Check main()"
