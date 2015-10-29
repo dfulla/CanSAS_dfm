@@ -126,19 +126,19 @@ class ConvertCansas(ExampleFile):
            self.createFile() 
            self.createEntry("sasentry01")
            sample_name = get_name_sample(exp_files)
-           self.createData("sasdata01",sample_name ,"1,2" ,"M, Q, Q","0")
+           #self.createTitle(sample_name)
+           self.createData("sasdata01", sample_name, [1,2], ["M", "Q", "Q"], [0,])
            file_i = exp_files[0]
            Qx,Qy,Qz = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[4]
-           I = get_columns(file_i)[2]  # intensity only from first file!
            M = np.array(get_magnetic_fields(exp_files))  
            I_2 =[]
+           
            for i,sample in enumerate(exp_files):
                    I_2.append(get_columns(exp_files[i])[2])
 
            intensities_array = np.empty([2,128,128])
            intensities_array[0] = I_2[0]
            intensities_array[1] = I_2[1]
-
 	   self.createDataSet("Qx", Qx, {"units": "1/A"})
 	   self.createDataSet("Qy", Qy, {"units": "1/A"})
            self.createDataSet("Qz", Qz, {"units": "1/A"})
