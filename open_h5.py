@@ -23,14 +23,14 @@ print x['entry01']
 # optimise script
 # rename functions
 
-
-
 import tables
 import os
 import numpy as np
 import h5py
 import sys
-         
+import numpy as np
+
+
 def CanSAS_file_exists(file_to_read):
     if os.path.isfile(file_to_read):
         return True
