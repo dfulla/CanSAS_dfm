@@ -13,7 +13,7 @@ def plot_3d_2datasets(h5File):
     x_data = dict.get('entry01')
     x = np.reshape(x_data.get('Qx'),16384,)
     y = np.reshape(x_data.get('Qy'),16384,)
-    z = x_data.get('I_array')
+    z = x_data.get('I')
     I_file1 = np.reshape(z[0],16384,)
     I_file2 = np.reshape(z[1],16384,)
     
