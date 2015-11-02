@@ -27,7 +27,7 @@ http://www.cansas.org/formats/canSAS2012/1.0/doc/examples.html
 #      @name=“D2O_100pc"
 #      @Q_indices=1,2
 #      @I_axes=“M,Q,Q”
-#        @M_indices=0
+#      @M_indices=0
 #      I: float[2,128,128]
 #      Qx: float[128,128]
 #      Qy: float[128,128]
@@ -65,9 +65,10 @@ class ExampleFile:
 	def createTitle(self, title):                                      
 		self.sasentry.create_dataset(title, (), data=title)
 
-	def createData(self, name, name_sample, qi, ii, m, mi=None, attributes=None):
+	#def createData(self, name, name_sample, qi, ii, m, mi=None, attributes=None):
+        def createData(self, name, qi, ii, m, mi=None, attributes=None):
 		self.sasdata = self.sasentry.create_group(name)
-                self.sasdata.attrs["name"] = name_sample
+                #self.sasdata.attrs["name"] = name_sample
 		self.sasdata.attrs["Q_indices"] = qi
 		self.sasdata.attrs["I_axes"] = ii
                 self.sasdata.attrs["M_indices"] = m
@@ -129,8 +130,9 @@ class ConvertCansas(ExampleFile):
            self.createFile() 
            self.createEntry("sasentry01")
            sample_name = get_name_sample(exp_files)
-           self.createTitle(sample_name)
-           self.createData("sasdata01", sample_name, [1,2], ["M", "Q", "Q"], [0,])
+           #self.createTitle(sample_name)
+           self.createData("sasdata01", [1,2], ["M", "Q", "Q"], [0,]) # without sample name
+           #self.createData("sasdata01", sample_name, [1,2], ["M", "Q", "Q"], [0,])
            file_i = exp_files[0]
            Qx,Qy,Qz = get_columns(file_i)[0],get_columns(file_i)[1],get_columns(file_i)[4]
            M = np.array(get_magnetic_fields(exp_files))  
