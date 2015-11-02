@@ -112,7 +112,7 @@ def main(file_to_read):
         complete_dictionary = dictionary_global(['entry01'], dictionary_list)  # need to extract these entries from the file_to_read
 
         print "dictionary created"
-        print complete_dictionary
+        #print complete_dictionary
         return complete_dictionary
     else:
         print "Could not do it. Check main() or the file you introduced."
