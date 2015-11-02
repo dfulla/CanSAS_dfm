@@ -1,6 +1,6 @@
 import open_h5 as oh
 import os
-
+import numpy as np
 
 def print_files_available():
         
@@ -41,7 +41,12 @@ def make_dict():
     dictionary = oh.main(file_to_read)
 
     if dictionary != None:
-        first_entry = dictionary.get('entry01')    
+
+        all_dictionary = dictionary.keys()
+
+        #print all_dictionary
+        
+        first_entry = dictionary.get('entry01')
         return first_entry
 
     else:
@@ -72,16 +77,26 @@ def get_keys():
     first_entry = make_dict()
     return first_entry, first_entry.keys()
 
-    
+def get_type(object):
+        if type(object) == np.ndarray:
+                return object.shape, object.size
+        else:
+                type_object = str(object)
+                print '%s not an array'%type_object
     
 if __name__ == '__main__':
     
     #get_parameters(0,60,100)
     keys = get_keys()
-
+    print keys[1]
+    
     for i, key in enumerate(keys[1]):
             one_key = keys[1][i]
+            #get_type(one_key)
             key_length = len(keys[0].get(one_key))
-            print '%s has %i elements'%(one_key,key_length)
+            get_type(keys[0].get(one_key))
+            shape = str(get_type(keys[0].get(one_key))[0])
+            size = str(get_type(keys[0].get(one_key))[1])
+            print '%s has shape %s and size %s'%(one_key, shape, size)
 
             
