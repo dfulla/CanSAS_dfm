@@ -152,6 +152,7 @@ class CANSASDATA(object):
                 
                 if type(axes[item]) == np.ndarray:
                     for element in axes[item]:
+
                         self.I_axes.append(element)
 
                 if type(axes[item]) == str:
@@ -161,7 +162,6 @@ class CANSASDATA(object):
                             self.I_axes.append(element)
                         
                 print 'I_axes: %s. Insert %i parameters'%(self.I_axes,len(self.I_axes))
-
 
     def get_parameter_indices(self):
 
@@ -261,8 +261,7 @@ class CANSASDATA(object):
                                     dict_return[self.I_axes[i]] = {'%f'%value[dict_parameters[key]]:'%s'%unit}
                                 else:
                                     # under development:
-                                    #print self.I_axes[i]
-                                    #print 'Qs here'
+
                                     dict_return[self.I_axes[i]] = {'%s'%self.value_Q:'%s'%unit}
 
 
@@ -276,7 +275,7 @@ class CANSASDATA(object):
 
 
 
-#a_point = CANSASDATA('D2O_100pc_two_entries.hdf5', 'sasentry01/sasdata01',(1,0,0))
+a_point = CANSASDATA('D2O_100pc_two_entries.hdf5', 'sasentry01/sasdata01',(1,0,0))
 
 a_point = CANSASDATA('generic2dtimetpseries.h5','sasentry01/sasdata01', (0,2,0,0,0))
 print 'this is just an example:'
@@ -284,4 +283,30 @@ print a_point()
 
 #.get_I_value('sasentry01/sasdata01',(0,0,0,0,0))
 
+
+
+
+
+
+
+
+
+# problems (challenges) of file generic2dtimetpseries.h5. This can be used to rise errors or warnings:
+
+# problem 1 - Q_indices are (1,3,4) but:
+#                                        Q matrix has shape 7x3x3
+#                                        Range of the first index should be 7
+#                                        index 1 corresponds to time (Time_indices = 1), that has range 3
+#           -solution: Q_indices should be (0,3,4). 0 corresponds to Temperature and temperature has range 7.
+
+# problem 2 - some units are wrong. Units for Pressure, Temperature and Time are all ms (mil.liseconds)
+
+# problem (or challenge) 3 - I_axes are given in this file as a list. Other files like D2O_100pc_two_entries.hdf5 I_axes are given as a numpy array.
+# I have solved this problem by converting all I_axes into a list but I could expect other formats (dictionaries, tuples etc...)
+
+
+# problems (challenges) of file D2O_100pc_two_entries.hdf5
+# I have generated this file to allow arbitrary number of entries and datasets. This is necessary to allow reading from a general file structure
+
+# problem 1. Values of Q in I_axes do not correspond to name of datasets Qx,Qy,Qz. Working on how to relate Qs and Qx,y,z
 
