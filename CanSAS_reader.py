@@ -208,6 +208,7 @@ class CANSASDATA(object):
                     value_I = value_I[self.given_parameters[j]]
 
                 unit = self.dict_subgroups_observables_attributes['%s'%a]['I']
+                
                 dict_return['I'] = {'%f'%value_I: '%s'%unit}
 
         for i,item in enumerate(self.given_parameters):
@@ -217,15 +218,19 @@ class CANSASDATA(object):
                 for j, dicts in enumerate(self.main_object_list[5][a]):
                     if dicts.keys()[0] == '%s/%s'%(a,self.I_axes[i]):
                         value = self.main_object_list[5][a][j]['%s/%s'%(a,self.I_axes[i])]
-                        unit = self.dict_subgroups_observables_attributes[a][self.I_axes[i]]['units']
+                        unit = self.dict_subgroups_observables_attributes[a][self.I_axes[i]]
+                        #unit = self.dict_subgroups_observables_attributes[a][self.I_axes[i]]['units']  alternative to present 'units'
+
 
                         for key in dict_parameters.keys():
 
                             if key.split(':')[0] == self.I_axes[i]:
                                 if self.I_axes[i] != 'Q':
+                                    #print self.I_axes[i]
                                     dict_return[self.I_axes[i]] = {'%f'%value[dict_parameters[key]]:'%s'%unit}
 
                                 else:
+                                    #print self.I_axes[i]
                                     dict_return[self.I_axes[i]] = {'no value yet. working on it':'%s'%unit}
 
 
