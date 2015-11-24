@@ -168,6 +168,7 @@ class CANSASDATA(object):
         for item in self.I_axes:  # is this function necessary?
             indices = '%s_indices'%item
 
+
     def check_given_parameters(self):
 
         self.input_parameters()
@@ -203,13 +204,45 @@ class CANSASDATA(object):
 
             if '%s/I'%a in self.main_object_list[2][a]:
                 value_I = self.main_object_list[5][a][0]['%s/I'%a] #[self.main_object_list[2][a]]
-
+                #print 'shape I: %s'%str(value_I.shape)
                 for j,index in enumerate(self.given_parameters):
                     value_I = value_I[self.given_parameters[j]]
 
                 unit = self.dict_subgroups_observables_attributes[a]['I']
-
                 dict_return['I'] = {'%f'%value_I: '%s'%unit}
+
+
+        # working the Q problem
+
+        dict_q_dset = {}
+        dict_q_axes = {}
+
+
+        for i, item in enumerate(self.main_object_list[2][a]):
+
+            if self.main_object_list[2][a][i].split('/')[-1][0] == 'Q':
+                dict_q_dset['%s:%i'%(self.main_object_list[2][a][i],i)] = self.main_object_list[2][a][i].split('/')[-1]
+
+        number_of_q = self.I_axes.count('Q')
+        print 'number of q is : %i'%number_of_q
+
+        print self.main_object_list[2][a]
+        for i,item in enumerate(self.I_axes):
+
+            if item == 'Q':
+                dict_q_axes['%s_index:%i'%(item, i)] = '%s_parameter:%i'%(item,self.given_parameters[i])
+
+        for dict in self.main_object_list[5][a]:
+
+            if dict.keys()[0] == '%s/Q'%a:
+
+                value_Q = dict['%s/Q'%a]
+                for i,element in enumerate(value_Q.shape):
+
+                    index_of_q = self.dict_all_subgroups_attributes[a]['Q_indices'][i]
+                    value_Q = value_Q[self.given_parameters[index_of_q]]
+
+                self.value_Q = value_Q
 
         for i,item in enumerate(self.given_parameters):
 
@@ -219,19 +252,18 @@ class CANSASDATA(object):
                     if dicts.keys()[0] == '%s/%s'%(a,self.I_axes[i]):
                         value = self.main_object_list[5][a][j]['%s/%s'%(a,self.I_axes[i])]
                         unit = self.dict_subgroups_observables_attributes[a][self.I_axes[i]]
-                        #unit = self.dict_subgroups_observables_attributes[a][self.I_axes[i]]['units']  alternative to present 'units'
-
 
                         for key in dict_parameters.keys():
 
                             if key.split(':')[0] == self.I_axes[i]:
-                                if self.I_axes[i] != 'Q':
-                                    #print self.I_axes[i]
-                                    dict_return[self.I_axes[i]] = {'%f'%value[dict_parameters[key]]:'%s'%unit}
+                                if self.I_axes[i][0] != 'Q':
 
+                                    dict_return[self.I_axes[i]] = {'%f'%value[dict_parameters[key]]:'%s'%unit}
                                 else:
+                                    # under development:
                                     #print self.I_axes[i]
-                                    dict_return[self.I_axes[i]] = {'no value yet. working on it':'%s'%unit}
+                                    #print 'Qs here'
+                                    dict_return[self.I_axes[i]] = {'%s'%self.value_Q:'%s'%unit}
 
 
 
@@ -244,9 +276,9 @@ class CANSASDATA(object):
 
 
 
-a_point = CANSASDATA('D2O_100pc_two_entries.hdf5', 'sasentry01/sasdata01',(1,0,0))
+#a_point = CANSASDATA('D2O_100pc_two_entries.hdf5', 'sasentry01/sasdata01',(1,0,0))
 
-#a_point = CANSASDATA('generic2dtimetpseries.h5','sasentry01/sasdata01', (2,2,1,0,0))
+a_point = CANSASDATA('generic2dtimetpseries.h5','sasentry01/sasdata01', (0,2,0,0,0))
 print 'this is just an example:'
 print a_point()
 
