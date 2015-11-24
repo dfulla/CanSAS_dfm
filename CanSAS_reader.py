@@ -207,8 +207,8 @@ class CANSASDATA(object):
                 for j,index in enumerate(self.given_parameters):
                     value_I = value_I[self.given_parameters[j]]
 
-                unit = self.dict_subgroups_observables_attributes['%s'%a]['I']
-                
+                unit = self.dict_subgroups_observables_attributes[a]['I']
+
                 dict_return['I'] = {'%f'%value_I: '%s'%unit}
 
         for i,item in enumerate(self.given_parameters):
@@ -244,9 +244,9 @@ class CANSASDATA(object):
 
 
 
-#a_point = CANSASDATA('D2O_100pc_two_entries.hdf5', 'sasentry01/sasdata01',(1,0,0))
+a_point = CANSASDATA('D2O_100pc_two_entries.hdf5', 'sasentry01/sasdata01',(1,0,0))
 
-a_point = CANSASDATA('generic2dtimetpseries.h5','sasentry01/sasdata01', (2,2,1,0,0))
+#a_point = CANSASDATA('generic2dtimetpseries.h5','sasentry01/sasdata01', (2,2,1,0,0))
 print 'this is just an example:'
 print a_point()
 
