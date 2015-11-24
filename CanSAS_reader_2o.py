@@ -329,7 +329,7 @@ print 'this is just an example:'
 #                                        index 1 corresponds to time (Time_indices = 1), that has range 3
 #           -solution: Q_indices should be (0,3,4). 0 corresponds to Temperature and temperature has range 7.
 
-# problem 2 - some units are wrong. Units for Pressure, Temperature and Time are all ms (mil.liseconds)
+# problem 2 - some units are wrong. Units for Pressure, Temperature and Time are all ms (milliseconds)
 
 # problem (or challenge) 3 - I_axes are given in this file as a list. Other files like D2O_100pc_two_entries.hdf5 I_axes are given as a numpy array.
 # I have solved this problem by converting all I_axes into a list but I could expect other formats (dictionaries, tuples etc...)
