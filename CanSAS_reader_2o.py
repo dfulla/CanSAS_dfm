@@ -209,7 +209,7 @@ class CANSASDATA(object):
         for k,parameter in enumerate(self.given_parameters):
             dict_parameters['%s:%i'%(self.I_axes[k],k)] = self.given_parameters[k]
 
-        # for I ####
+        # extracting I ####
 
         for i,item in enumerate(self.given_parameters):
 
@@ -252,6 +252,8 @@ class CANSASDATA(object):
 
                 self.value_Q = value_Q
 
+        # extracting the rest of the parameters
+
         for i,item in enumerate(self.given_parameters):
 
             if '%s/%s'%(a,self.I_axes[i]) in self.main_object_list[2][a]:
@@ -283,15 +285,13 @@ class CANSASDATA(object):
 
 
 
+#x = CANSASDATA('generic2dtimetpseries.h5')
+#print 'this is just an example:'
+#print x('sasentry01/sasdata01',(2,0,0,0,0))
 
 
-x = CANSASDATA('generic2dtimetpseries.h5')
-print 'this is just an example:'
-print x('sasentry01/sasdata01',(2,0,0,0,0))
-
-
-#x = GET_I('D2O_100pc_two_entries.hdf5')
-#print x('sasentry02/sasdata01',(1,0,0))
+x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+print x('sasentry01/sasdata01',(1,0,0))
 
 
 
