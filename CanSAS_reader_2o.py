@@ -36,19 +36,10 @@ print x('sasentry01/sasdata01', (2,2,1,0,0))
 
 class CANSASDATA(object):
 
-    #def __init__(self, file_to_read,a,b):
     def __init__(self, file_to_read):
         
         self.file_to_read = file_to_read
-
-        #print self.file_to_read
-
         self.subgroup =self. get_subgroups()
-        #self.a = a
-        #self.b = b
-
-    #def __call__(self):
-        #return self.get_I_value(self.a,self.b)
 
     def open_h5_file(self):
         self.f = h5py.File(self.file_to_read,  "r")
@@ -200,10 +191,10 @@ class GET_I(object):
     def __init__(self, file_to_read):
         self.file_to_read = file_to_read
 
-    def __call__(self, a,b):
-        self.a = a
-        self.b = b
-        return self.get_I_value(self.a,self.b)
+    def __call__(self, path, given_params):
+        self.path = path
+        self.given_params = given_params
+        return self.get_I_value(self.path,self.given_params)
 
     def get_I_value(self, a, given_parameters):
 
