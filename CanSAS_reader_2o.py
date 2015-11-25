@@ -34,7 +34,7 @@ print x('sasentry01/sasdata01', (2,2,1,0,0))
 '''
 
 
-class CANSASDATA(object):
+class INFOEXTRACTOR(object):
 
     def __init__(self, file_to_read):
         
@@ -47,7 +47,6 @@ class CANSASDATA(object):
 
     def get_subgroups(self):
         self.open_h5_file()
-
         maingroup = self.f['/']
         groups = []
         subgroup = []
@@ -186,7 +185,7 @@ class CANSASDATA(object):
 
 
 
-class GET_I(object):
+class CANSASDATA(object):
 
     def __init__(self, file_to_read):
         self.file_to_read = file_to_read
@@ -198,10 +197,10 @@ class GET_I(object):
 
     def get_I_value(self, a, given_parameters):
 
-        self.main_object_list = CANSASDATA(self.file_to_read).object_assembler()
+        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler()
         self.dict_subgroups_observables_attributes = self.main_object_list[4]
-        self.dict_all_subgroups_attributes = CANSASDATA(self.file_to_read).get_subgroup_attributes()
-        self.I_axes = CANSASDATA(self.file_to_read).input_parameters()
+        self.dict_all_subgroups_attributes = INFOEXTRACTOR(self.file_to_read).get_subgroup_attributes()
+        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
         self.given_parameters = given_parameters
 
         dict_return = {}
@@ -226,7 +225,6 @@ class GET_I(object):
 
         dict_q_dset = {}
         dict_q_axes = {}
-
 
         for i, item in enumerate(self.main_object_list[2][a]):
 
@@ -287,26 +285,13 @@ class GET_I(object):
 
 
 
-x = GET_I('generic2dtimetpseries.h5')
+x = CANSASDATA('generic2dtimetpseries.h5')
+print 'this is just an example:'
 print x('sasentry01/sasdata01',(2,0,0,0,0))
 
 
 #x = GET_I('D2O_100pc_two_entries.hdf5')
 #print x('sasentry02/sasdata01',(1,0,0))
-
-    #.get_I_value('sasentry01/sasdata01',(0,0,0,0,0))
-
-#a_point = CANSASDATA('D2O_100pc_two_entries.hdf5', 'sasentry01/sasdata01',(1,0,0))
-
-#a_point = CANSASDATA('generic2dtimetpseries.h5','sasentry01/sasdata01', (0,2,0,0,0))
-print 'this is just an example:'
-#print a_point()
-
-#.get_I_value('sasentry01/sasdata01',(0,0,0,0,0))
-
-
-
-
 
 
 
