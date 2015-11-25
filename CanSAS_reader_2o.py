@@ -296,12 +296,12 @@ class GET_I(object):
 
 
 
-#x = GET_I('generic2dtimetpseries.h5')
-#print x('sasentry01/sasdata01',(2,0,0,0,0))
+x = GET_I('generic2dtimetpseries.h5')
+print x('sasentry01/sasdata01',(2,0,0,0,0))
 
 
-x = GET_I('D2O_100pc_two_entries.hdf5')
-print x('sasentry02/sasdata01',(1,0,0))
+#x = GET_I('D2O_100pc_two_entries.hdf5')
+#print x('sasentry02/sasdata01',(1,0,0))
 
     #.get_I_value('sasentry01/sasdata01',(0,0,0,0,0))
 
