@@ -27,8 +27,8 @@ instruction to execute (2 object):
 
 in python:
 
-from CanSAS_reader_2o import GET_I     ##### I will change this name (GET_I)
-x = GET_I('generic2dtimetpseries.h5')
+from CanSAS_reader_2o import CANSASDATA     #####
+x = CANSASDATA('generic2dtimetpseries.h5')
 print x('sasentry01/sasdata01', (2,2,1,0,0))
 
 '''
@@ -257,15 +257,29 @@ class CANSASDATA(object):
 
                 self.value_Q = value_Q
 
-        print dict_q_axes
-        print dict_q_dset
+        #print dict_q_axes
+        #print dict_q_dset
 
         # specific case of Qx,Qy,Qz
 
-        for item in dict_q_dset:
-            print 'Qx' in dict_q_dset.get(item)
 
+        if 'Qx' in self.main_object_list[1][path]:
 
+            for item in dict_q_dset:
+
+                one_q = dict_q_dset.get(item)
+            #print one_q
+
+                q_first_index = int(dict_q_axes.get('Q_index:1').split(':')[-1])
+                q_second_index = int(dict_q_axes.get('Q_index:2').split(':')[-1])
+
+                for i,elements in enumerate(self.main_object_list[5][path]):
+                #print elements
+                    one_q = dict_q_dset.get(item)
+                    if '%s/%s'%(path,one_q) in self.main_object_list[5][path][i]:
+                    #print path
+                    #print item
+                        print '%s:%f'%(one_q, self.main_object_list[5][path][i]['%s/%s'%(path,one_q)][q_first_index][q_second_index])
 
 
 
@@ -301,13 +315,13 @@ class CANSASDATA(object):
 
 
 
-x = CANSASDATA('generic2dtimetpseries.h5')
+#x = CANSASDATA('generic2dtimetpseries.h5')
 #print 'this is just an example:'
-print x('sasentry01/sasdata01',(2,0,0,0,0))
+#print x('sasentry01/sasdata01',(0,2,0,0,0))
 
 
-#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-#print x('sasentry01/sasdata01',(1,0,0))
+x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+print x('sasentry01/sasdata01',(1,0,0))
 
 
 
