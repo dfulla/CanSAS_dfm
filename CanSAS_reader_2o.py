@@ -78,6 +78,8 @@ class INFOEXTRACTOR(object):
             self.dict_observables[sub] = self.list_observables
             self.dict_observables_path[sub] = self.list_observables_path
 
+        return self.list_observables_path
+
     def get_subgroup_attributes(self):
 
         self.dict_all_subgroups_attributes = {}
@@ -86,9 +88,11 @@ class INFOEXTRACTOR(object):
         for sub in self.subgroup:
         
             for member in self.f[sub].attrs:
+
                 self.dict_subgroups_attributes[member] = self.f[sub].attrs.__getitem__(member)
             self.dict_all_subgroups_attributes[sub] = self.dict_subgroups_attributes
 
+        #print self.dict_subgroups_attributes
         return self.dict_all_subgroups_attributes
 
     def get_observable_attributes(self):
@@ -109,6 +113,7 @@ class INFOEXTRACTOR(object):
                 self.dict_observables_attributes[item] = dict
 
             self.dict_subgroups_observables_attributes[sub] = self.dict_observables_attributes
+            #print self.dict_subgroups_observables_attributes
 
     def get_data_dsets(self):
         self.get_observables()
@@ -128,6 +133,8 @@ class INFOEXTRACTOR(object):
 
             self.dict_data_dsets2[sub] = self.dict_data_dsets
 
+            return self.dict_data_dsets2['sasentry01/sasdata01'][0]['sasentry01/sasdata01/I'].shape
+
     def object_assembler(self):
         self.open_h5_file()
         self.get_subgroup_attributes()
@@ -136,6 +143,7 @@ class INFOEXTRACTOR(object):
         self.get_data_dsets()
         self.main_object_list = [self.subgroup, self.dict_observables, self.dict_observables_path, self.dict_subgroups_attributes, self.dict_subgroups_observables_attributes ,self.dict_data_dsets2]
 
+        #print self.main_object_list
         return self.main_object_list
 
 
@@ -157,7 +165,7 @@ class INFOEXTRACTOR(object):
                         for element in axes[item].split(','):
                             self.I_axes.append(element)
                         
-                print 'I_axes: %s. Insert %i parameters'%(self.I_axes,len(self.I_axes))
+                #print 'I_axes: %s. Insert %i parameters'%(self.I_axes,len(self.I_axes))
 
                 return self.I_axes
 
@@ -184,20 +192,25 @@ class INFOEXTRACTOR(object):
                             print 'ERROR: input %s and maximum should be %s'%(self.given_parameters,data[self.list_observables_path[i]].shape)
 
 
-
 class CANSASDATA(object):
 
     def __init__(self, file_to_read):
         self.file_to_read = file_to_read
 
-
     def __call__(self, path, given_parameters):
         self.path = path
         self.given_parameters = given_parameters
+
         self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
 
+        the_shape = INFOEXTRACTOR(self.file_to_read).get_data_dsets()
+
+        print 'I_axes: %s. Insert %i parameters with shape: %s'%(self.I_axes,len(self.I_axes),the_shape)
+
         # it allows user to correct wrong input parameters (only once)
+
         if len(self.I_axes) != len(self.given_parameters):
+
             print 'ERROR: given %i parameters (%s) but allowed parameters %i'%(len(self.given_parameters),self.given_parameters,len(self.I_axes))
             new_parameters = raw_input('Introduce %i parameters e.g. (0,0...0))\n'%len(self.I_axes))
             self.given_parameters = ()
@@ -210,8 +223,34 @@ class CANSASDATA(object):
                 except:
                     pass
 
+        self.verify_input()
+
+        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler()
+        self.list_observables_path = INFOEXTRACTOR(self.file_to_read).get_observables()
+
+        #for i,data in enumerate(self.main_object_list[5]):
+                #if 'I' in self.list_observables_path[i]:
+
+
 
         return self.get_I_value(self.path,self.given_parameters)
+
+
+    def verify_input(self):
+
+        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
+
+        if len(self.I_axes) == len(self.given_parameters):
+
+            the_shape = INFOEXTRACTOR(self.file_to_read).get_data_dsets()
+            for i,element in enumerate(the_shape):
+                if element <= self.given_parameters[i]:
+                    print 'ERROR: Given parameter %i should be smaller than %i'%(self.given_parameters[i],element)
+
+                else:
+                    pass
+
+            return self.given_parameters
 
     def get_I_value(self, path, given_parameters):
 
@@ -322,13 +361,13 @@ class CANSASDATA(object):
 
 
 
-x = CANSASDATA('generic2dtimetpseries.h5')
+#x = CANSASDATA('generic2dtimetpseries.h5')
 #print 'this is just an example:'
-print x('sasentry01/sasdata01',(0,2,0,0,0))
+#print x('sasentry01/sasdata01',(2,2,0,0,0))
 
 
-#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-#print x('sasentry01/sasdata01',(0,0,0))
+x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+print x('sasentry01/sasdata01',(1,0,0))
 
 
 
