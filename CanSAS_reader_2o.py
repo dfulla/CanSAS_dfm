@@ -190,6 +190,7 @@ class CANSASDATA(object):
     def __init__(self, file_to_read):
         self.file_to_read = file_to_read
 
+
     def __call__(self, path, given_parameters):
         self.path = path
         self.given_parameters = given_parameters
@@ -202,6 +203,9 @@ class CANSASDATA(object):
         self.dict_all_subgroups_attributes = INFOEXTRACTOR(self.file_to_read).get_subgroup_attributes()
         self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
         self.given_parameters = given_parameters
+
+        if len(self.I_axes) != len(self.given_parameters):
+            print 'ERROR: given %i parameters (%s) but allowed parameters %i'%(len(self.given_parameters),self.given_parameters,len(self.I_axes))
 
         dict_return = {}
         dict_parameters = {}
