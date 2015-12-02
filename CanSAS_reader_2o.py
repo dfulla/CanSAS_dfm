@@ -280,6 +280,7 @@ class CANSASDATA(object):
                     #print path
                     #print item
                         print '%s:%f'%(one_q, self.main_object_list[5][path][i]['%s/%s'%(path,one_q)][q_first_index][q_second_index])
+                        dict_return['%s'%one_q] = {'%f'%self.main_object_list[5][path][i]['%s/%s'%(path,one_q)][q_first_index][q_second_index]}
 
 
 
