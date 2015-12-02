@@ -222,10 +222,6 @@ class CANSASDATA(object):
                 dict_return['I'] = {'%f'%value_I: '%s'%unit}
 
 
-
-
-
-
         # working the Q problem
 
         dict_q_dset = {}
@@ -237,7 +233,7 @@ class CANSASDATA(object):
                 dict_q_dset['%s:%i'%(self.main_object_list[2][path][i],i)] = self.main_object_list[2][path][i].split('/')[-1]
 
         number_of_q = self.I_axes.count('Q')
-        print 'number of q is : %i'%number_of_q
+        #print 'number of q is : %i'%number_of_q
 
         print self.main_object_list[2][path]
         for i,item in enumerate(self.I_axes):
@@ -257,32 +253,23 @@ class CANSASDATA(object):
 
                 self.value_Q = value_Q
 
-        #print dict_q_axes
-        #print dict_q_dset
-
         # specific case of Qx,Qy,Qz
-
 
         if 'Qx' in self.main_object_list[1][path]:
 
             for item in dict_q_dset:
 
                 one_q = dict_q_dset.get(item)
-            #print one_q
-
                 q_first_index = int(dict_q_axes.get('Q_index:1').split(':')[-1])
                 q_second_index = int(dict_q_axes.get('Q_index:2').split(':')[-1])
 
                 for i,elements in enumerate(self.main_object_list[5][path]):
-                #print elements
+
                     one_q = dict_q_dset.get(item)
                     if '%s/%s'%(path,one_q) in self.main_object_list[5][path][i]:
-                    #print path
-                    #print item
-                        print '%s:%f'%(one_q, self.main_object_list[5][path][i]['%s/%s'%(path,one_q)][q_first_index][q_second_index])
-                        dict_return['%s'%one_q] = {'%f'%self.main_object_list[5][path][i]['%s/%s'%(path,one_q)][q_first_index][q_second_index]}
 
-
+                        unit = self.dict_subgroups_observables_attributes[path][one_q]
+                        dict_return['%s'%one_q] = {'%f'%self.main_object_list[5][path][i]['%s/%s'%(path,one_q)][q_first_index][q_second_index]:'%s'%unit}
 
         # extracting the rest of the parameters
 
