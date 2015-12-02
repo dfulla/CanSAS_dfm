@@ -15,13 +15,9 @@ Script returns a dictionary with the data corresponding to the parameters input 
 
 Under development:
 
-- DONE - split the current structure into two objects - sctructure and readability need to be reviewed and improved
-- Reading of Q values or Qx,Qy,Qz values need to be implemented
-- Return errors/warnings when the file structure is not correct
-- Propose user number of possible parameters and range
-- Script needs to be tested
+- UNDER DEVELOPMENT: Return errors/warnings when the file structure is not correct
+- ONGOING: Script needs to be tested
 - Develop a script that scans all possible values and check their types
-
 
 instruction to execute (2 object):
 
@@ -92,7 +88,6 @@ class INFOEXTRACTOR(object):
                 self.dict_subgroups_attributes[member] = self.f[sub].attrs.__getitem__(member)
             self.dict_all_subgroups_attributes[sub] = self.dict_subgroups_attributes
 
-        #print self.dict_subgroups_attributes
         return self.dict_all_subgroups_attributes
 
     def get_observable_attributes(self):
@@ -113,7 +108,6 @@ class INFOEXTRACTOR(object):
                 self.dict_observables_attributes[item] = dict
 
             self.dict_subgroups_observables_attributes[sub] = self.dict_observables_attributes
-            #print self.dict_subgroups_observables_attributes
 
     def get_data_dsets(self):
         self.get_observables()
@@ -143,7 +137,6 @@ class INFOEXTRACTOR(object):
         self.get_data_dsets()
         self.main_object_list = [self.subgroup, self.dict_observables, self.dict_observables_path, self.dict_subgroups_attributes, self.dict_subgroups_observables_attributes ,self.dict_data_dsets2]
 
-        #print self.main_object_list
         return self.main_object_list
 
 
@@ -174,22 +167,6 @@ class INFOEXTRACTOR(object):
         for item in self.I_axes:  # is this function necessary?
             indices = '%s_indices'%item
 
-
-    def check_given_parameters(self):
-
-        self.input_parameters()
-        self.get_parameter_indices() # decide where to call it
-    
-        if len(self.given_parameters) != len(self.I_axes):
-            print 'ERROR: need %i parameters. Got %i parameters instead'%(len(self.I_axes),len(self.given_parameters),)
-
-        else:
-
-            for i,data in enumerate(self.main_object_list[5]):
-                if 'I' in self.list_observables_path[i]:
-                    for j, parameter in enumerate(data[self.list_observables_path[i]].shape):
-                        if parameter <= self.given_parameters[j]:
-                            print 'ERROR: input %s and maximum should be %s'%(self.given_parameters,data[self.list_observables_path[i]].shape)
 
 
 class CANSASDATA(object):
@@ -227,11 +204,6 @@ class CANSASDATA(object):
 
         self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler()
         self.list_observables_path = INFOEXTRACTOR(self.file_to_read).get_observables()
-
-        #for i,data in enumerate(self.main_object_list[5]):
-                #if 'I' in self.list_observables_path[i]:
-
-
 
         return self.get_I_value(self.path,self.given_parameters)
 
@@ -361,13 +333,13 @@ class CANSASDATA(object):
 
 
 
-#x = CANSASDATA('generic2dtimetpseries.h5')
+x = CANSASDATA('generic2dtimetpseries.h5')
 #print 'this is just an example:'
-#print x('sasentry01/sasdata01',(2,2,0,0,0))
+print x('sasentry01/sasdata01',(2,2,0,0,0))
 
 
-x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-print x('sasentry01/sasdata01',(1,0,0))
+#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+#print x('sasentry01/sasdata01',(1,0,0))
 
 
 
