@@ -194,6 +194,23 @@ class CANSASDATA(object):
     def __call__(self, path, given_parameters):
         self.path = path
         self.given_parameters = given_parameters
+        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
+
+        # it allows user to correct wrong input parameters (only once)
+        if len(self.I_axes) != len(self.given_parameters):
+            print 'ERROR: given %i parameters (%s) but allowed parameters %i'%(len(self.given_parameters),self.given_parameters,len(self.I_axes))
+            new_parameters = raw_input('Introduce %i parameters e.g. (0,0...0))\n'%len(self.I_axes))
+            self.given_parameters = ()
+            for element in new_parameters:
+
+                try:
+                    int(element)
+                    self.given_parameters = self.given_parameters + (int(element),)
+
+                except:
+                    pass
+
+
         return self.get_I_value(self.path,self.given_parameters)
 
     def get_I_value(self, path, given_parameters):
@@ -201,16 +218,14 @@ class CANSASDATA(object):
         self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler()
         self.dict_subgroups_observables_attributes = self.main_object_list[4]
         self.dict_all_subgroups_attributes = INFOEXTRACTOR(self.file_to_read).get_subgroup_attributes()
-        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
-        self.given_parameters = given_parameters
-
-        if len(self.I_axes) != len(self.given_parameters):
-            print 'ERROR: given %i parameters (%s) but allowed parameters %i'%(len(self.given_parameters),self.given_parameters,len(self.I_axes))
+        #self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
+        #self.given_parameters = given_parameters
 
         dict_return = {}
         dict_parameters = {}
 
         for k,parameter in enumerate(self.given_parameters):
+
             dict_parameters['%s:%i'%(self.I_axes[k],k)] = self.given_parameters[k]
 
         # extracting I ####
@@ -307,13 +322,13 @@ class CANSASDATA(object):
 
 
 
-#x = CANSASDATA('generic2dtimetpseries.h5')
+x = CANSASDATA('generic2dtimetpseries.h5')
 #print 'this is just an example:'
-#print x('sasentry01/sasdata01',(0,2,0,0,0))
+print x('sasentry01/sasdata01',(0,2,0,0,0))
 
 
-x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-print x('sasentry01/sasdata01',(1,0,0))
+#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+#print x('sasentry01/sasdata01',(0,0,0))
 
 
 
