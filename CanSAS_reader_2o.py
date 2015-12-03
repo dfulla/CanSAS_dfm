@@ -162,12 +162,6 @@ class INFOEXTRACTOR(object):
 
                 return self.I_axes
 
-    def get_parameter_indices(self):
-
-        for item in self.I_axes:  # is this function necessary?
-            indices = '%s_indices'%item
-
-
 
 class CANSASDATA(object):
 
@@ -201,7 +195,6 @@ class CANSASDATA(object):
                     pass
 
         self.verify_input()
-
         self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler()
         self.list_observables_path = INFOEXTRACTOR(self.file_to_read).get_observables()
 
@@ -335,13 +328,13 @@ class CANSASDATA(object):
 
 
 
-#x = CANSASDATA('generic2dtimetpseries.h5')
+x = CANSASDATA('generic2dtimetpseries.h5')
 #print 'this is just an example:'
-#print x('sasentry01/sasdata01',(2,2,0,0,0))
+print x('sasentry01/sasdata01',(2,2,0,0,0))
 
 
-x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-print x('sasentry01/sasdata01',(0,0,0))
+#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+#print x('sasentry01/sasdata01',(0,0,0))
 
 
 
