@@ -251,6 +251,8 @@ class CANSASDATA(object):
                 unit = self.dict_subgroups_observables_attributes[path]['I']
                 dict_return['I'] = {'%f'%value_I: '%s'%unit}
 
+            if '%s/I'%path not in self.main_object_list[2][path]:
+                print 'ERROR: No intensity in data selected.'
 
         # working the Q problem
 
@@ -333,13 +335,13 @@ class CANSASDATA(object):
 
 
 
-x = CANSASDATA('generic2dtimetpseries.h5')
+#x = CANSASDATA('generic2dtimetpseries.h5')
 #print 'this is just an example:'
-print x('sasentry01/sasdata01',(2,2,0,0,0))
+#print x('sasentry01/sasdata01',(2,2,0,0,0))
 
 
-#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-#print x('sasentry01/sasdata01',(1,0,0))
+x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+print x('sasentry01/sasdata01',(0,0,0))
 
 
 
