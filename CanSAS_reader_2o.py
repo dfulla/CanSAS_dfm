@@ -109,7 +109,7 @@ class INFOEXTRACTOR(object):
 
             self.dict_subgroups_observables_attributes[sub] = self.dict_observables_attributes
 
-    def get_data_dsets(self):
+    def get_data_dsets(self,path):
         self.get_observables()
         self.dict_data_dsets2 = {}
 
@@ -127,21 +127,21 @@ class INFOEXTRACTOR(object):
 
             self.dict_data_dsets2[sub] = self.dict_data_dsets
 
-            return self.dict_data_dsets2['sasentry01/sasdata01'][0]['sasentry01/sasdata01/I'].shape
+            return self.dict_data_dsets2[path][0]['%s/I'%path].shape
 
-    def object_assembler(self):
+    def object_assembler(self,path):
+
         self.open_h5_file()
         self.get_subgroup_attributes()
         self.get_observables()
         self.get_observable_attributes()
-        self.get_data_dsets()
+        self.get_data_dsets(path)
         self.main_object_list = [self.subgroup, self.dict_observables, self.dict_observables_path, self.dict_subgroups_attributes, self.dict_subgroups_observables_attributes ,self.dict_data_dsets2]
 
         return self.main_object_list
 
-
-    def input_parameters(self):   # parameters to input, better name?
-        self.object_assembler()
+    def input_parameters(self,path):   # parameters to input, better name?
+        self.object_assembler(path)
 
         axes = self.main_object_list[3]
         for item in axes:
@@ -172,9 +172,9 @@ class CANSASDATA(object):
         self.path = path
         self.given_parameters = given_parameters
 
-        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
+        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters(self.path)
 
-        the_shape = INFOEXTRACTOR(self.file_to_read).get_data_dsets()
+        the_shape = INFOEXTRACTOR(self.file_to_read).get_data_dsets(self.path)
 
         print 'I_axes: %s. Insert %i parameters with shape: %s'%(self.I_axes,len(self.I_axes),the_shape)
 
@@ -195,7 +195,7 @@ class CANSASDATA(object):
                     pass
 
         self.verify_input()
-        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler()
+        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler(path)
         self.list_observables_path = INFOEXTRACTOR(self.file_to_read).get_observables()
 
         return self.get_I_value(self.path,self.given_parameters)
@@ -203,11 +203,11 @@ class CANSASDATA(object):
 
     def verify_input(self):
 
-        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
+        self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters(self.path)
 
         if len(self.I_axes) == len(self.given_parameters):
 
-            the_shape = INFOEXTRACTOR(self.file_to_read).get_data_dsets()
+            the_shape = INFOEXTRACTOR(self.file_to_read).get_data_dsets(self.path)
             for i,element in enumerate(the_shape):
                 if element <= self.given_parameters[i]:
                     print 'ERROR: Given parameter %i should be smaller than %i'%(self.given_parameters[i],element)
@@ -219,11 +219,9 @@ class CANSASDATA(object):
 
     def get_I_value(self, path, given_parameters):
 
-        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler()
+        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler(path)
         self.dict_subgroups_observables_attributes = self.main_object_list[4]
         self.dict_all_subgroups_attributes = INFOEXTRACTOR(self.file_to_read).get_subgroup_attributes()
-        #self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters()
-        #self.given_parameters = given_parameters
 
         dict_return = {}
         dict_parameters = {}
@@ -328,13 +326,13 @@ class CANSASDATA(object):
 
 
 
-x = CANSASDATA('generic2dtimetpseries.h5')
+#x = CANSASDATA('generic2dtimetpseries.h5')
 #print 'this is just an example:'
-print x('sasentry01/sasdata01',(2,2,0,0,0))
+#print x('sasentry01/sasdata01',(2,2,0,0,0))
 
 
-#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-#print x('sasentry01/sasdata01',(0,0,0))
+x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+print x('sasentry01/sasdata01',(0,0,0))
 
 
 
