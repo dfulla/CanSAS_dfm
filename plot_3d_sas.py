@@ -63,8 +63,8 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         print 'plotting...wait 0.5 min...'
         
-        #plot3d(file_content)
+        plot3d(file_content)
         #plot2d_from_array([1,2,4,3],[2,3,4,5])
-        plot1d_from_array([1,2,4,3])
+        #plot1d_from_array([1,2,4,3])
         
     print len(sys.argv)
