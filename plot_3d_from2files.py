@@ -25,7 +25,8 @@ def plot_3d_2datasets(h5File):
 if __name__ == '__main__':
 
     if len(sys.argv) == 1:
-        plot_3d_2datasets('D2O_100pc.hdf5')
+        #plot_3d_2datasets('D2O_100pc.hdf5')
+        plot_3d_2datasets('D2O_100pc_two_entries.hdf5')
     if len(sys.argv) == 2:
         if sys.argv[1].find('.h5') != -1 or sys.argv[1].find('.hdf5') != -1:
             plot_3d_2datasets(sys.argv[1])
