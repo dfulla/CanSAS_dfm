@@ -50,9 +50,11 @@ class INFOEXTRACTOR(object):
         for group in maingroup:
             groups.append(group)
         for item in groups:
+
             for member in self.f['/%s'%item]:
                 subgroup.append('%s/%s'%(item,member))
 
+        self.groups = groups
         self.subgroup = subgroup
         return self.subgroup
 
@@ -110,24 +112,58 @@ class INFOEXTRACTOR(object):
             self.dict_subgroups_observables_attributes[sub] = self.dict_observables_attributes
 
     def get_data_dsets(self,path):
+
+        sasentry = path.split('/')[0]
+        sasdata = path.split('/')[1]
+
         self.get_observables()
         self.dict_data_dsets2 = {}
+        self.dict_data_dsets = []
+        self.dict_data_dsets3 = {}   # restructure dictionary
+        self.dict_data_dset4 = {}
+        self.delivery_dict = {}
 
         for sub in self.subgroup:
 
-            self.dict_data_dsets = []
             for item in self.dict_observables_path[sub]:
+
                 dict = {}
                 values = []
+
                 for data in self.f[item]:
+
+                    self.dict_data_dset4[item] = data
                     values.append(data)
 
                 dict[item] = np.array(values)
+
                 self.dict_data_dsets.append(dict)
 
             self.dict_data_dsets2[sub] = self.dict_data_dsets
 
+        for element in self.groups:
+
+            list_subgroups_per_group = []
+            for sub in self.subgroup:
+
+                for concept in sub.split('/'):
+                    if element in concept:
+                        list_subgroups_per_group.append(sub)
+
+            self.dict_data_dsets3[element] = list_subgroups_per_group
+
+        for key in self.dict_data_dset4.keys():
+
+            if '%s/%s'%(sasentry,sasdata) in key:
+
+                self.delivery_dict[key] = self.dict_data_dset4[key]
+
+        try:
             return self.dict_data_dsets2[path][0]['%s/I'%path].shape
+
+        except:
+
+            return self.delivery_dict['%s/I'%path].shape
 
     def object_assembler(self,path):
 
@@ -136,7 +172,7 @@ class INFOEXTRACTOR(object):
         self.get_observables()
         self.get_observable_attributes()
         self.get_data_dsets(path)
-        self.main_object_list = [self.subgroup, self.dict_observables, self.dict_observables_path, self.dict_subgroups_attributes, self.dict_subgroups_observables_attributes ,self.dict_data_dsets2]
+        self.main_object_list = [self.subgroup, self.dict_observables, self.dict_observables_path, self.dict_subgroups_attributes, self.dict_subgroups_observables_attributes ,self.dict_data_dsets2,self.delivery_dict]
 
         return self.main_object_list
 
@@ -157,8 +193,6 @@ class INFOEXTRACTOR(object):
                     if axes[item].split(',') > 1:
                         for element in axes[item].split(','):
                             self.I_axes.append(element)
-                        
-                #print 'I_axes: %s. Insert %i parameters'%(self.I_axes,len(self.I_axes))
 
                 return self.I_axes
 
@@ -168,12 +202,13 @@ class CANSASDATA(object):
     def __init__(self, file_to_read):
         self.file_to_read = file_to_read
 
-    def __call__(self, path, given_parameters):
-        self.path = path
+    def __call__(self, sasentry, sasdata ,given_parameters):
+
+        self.path = '%s/%s'%(sasentry,sasdata)
+
         self.given_parameters = given_parameters
 
         self.I_axes = INFOEXTRACTOR(self.file_to_read).input_parameters(self.path)
-
         the_shape = INFOEXTRACTOR(self.file_to_read).get_data_dsets(self.path)
 
         print 'I_axes: %s. Insert %i parameters with shape: %s'%(self.I_axes,len(self.I_axes),the_shape)
@@ -195,7 +230,7 @@ class CANSASDATA(object):
                     pass
 
         self.verify_input()
-        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler(path)
+        self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler(self.path)
         self.list_observables_path = INFOEXTRACTOR(self.file_to_read).get_observables()
 
         return self.get_I_value(self.path,self.given_parameters)
@@ -221,6 +256,11 @@ class CANSASDATA(object):
 
         self.main_object_list = INFOEXTRACTOR(self.file_to_read).object_assembler(path)
         self.dict_subgroups_observables_attributes = self.main_object_list[4]
+        self.delivery_dict = self.main_object_list[6]
+        self.dict_data_dset2 = self.main_object_list[5]
+
+        #print self.delivery_dict
+        #print self.delivery_dict
         self.dict_all_subgroups_attributes = INFOEXTRACTOR(self.file_to_read).get_subgroup_attributes()
 
         dict_return = {}
@@ -235,9 +275,21 @@ class CANSASDATA(object):
         for i,item in enumerate(self.given_parameters):
 
             if '%s/I'%path in self.main_object_list[2][path]:
-                value_I = self.main_object_list[5][path][0]['%s/I'%path] #[self.main_object_list[2][a]]
-                for j,index in enumerate(self.given_parameters):
+
+                value_I = self.dict_data_dset2[path]#['%s/I'%path]
+
+                for k, thing in enumerate(value_I):
+
+                    if '%s/I'%path in thing:
+                        value_I = value_I[k]['%s/I'%path]
+
+
+                j = 0
+                for t in range(len(value_I.shape)):
+
                     value_I = value_I[self.given_parameters[j]]
+
+                    j = j+1
 
                 unit = self.dict_subgroups_observables_attributes[path]['I']
                 dict_return['I'] = {'%f'%value_I: '%s'%unit}
@@ -258,11 +310,11 @@ class CANSASDATA(object):
         number_of_q = self.I_axes.count('Q')
         #print 'number of q is : %i'%number_of_q
 
-        print self.main_object_list[2][path]
         for i,item in enumerate(self.I_axes):
 
             if item == 'Q':
                 dict_q_axes['%s_index:%i'%(item, i)] = '%s_parameter:%i'%(item,self.given_parameters[i])
+
 
         for dict in self.main_object_list[5][path]:
 
@@ -326,15 +378,11 @@ class CANSASDATA(object):
 
 
 
-#x = CANSASDATA('generic2dtimetpseries.h5')
-#print 'this is just an example:'
-#print x('sasentry01/sasdata01',(2,2,0,0,0))
+x = CANSASDATA('generic2dtimetpseries.h5')
+print x('sasentry01','sasdata01',(0,0,0,0,0))
 
-
-x = CANSASDATA('D2O_100pc_two_entries.hdf5')
-print x('sasentry01/sasdata01',(0,0,0))
-
-
+#x = CANSASDATA('D2O_100pc_two_entries.hdf5')
+#print x('sasentry02','sasdata01',(1,0,0))
 
 
 
